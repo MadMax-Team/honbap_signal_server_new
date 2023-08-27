@@ -234,3 +234,20 @@ exports.kakaoLogin = async function (email){
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+// 이미지 업로드
+exports.uploadImage = async function (userIdx,location){
+    try{
+        //변수 값 배열 형태로 전달
+        insertUserimage = [location,userIdx];
+        const connection = await pool.getConnection(async (conn)=>conn);
+        const imageResult = await userDao.updateUserImage(connection,insertUserimage);
+
+        connection.release();
+        return insertUserimage;
+    }
+    catch (err){
+        logger.error(`App - image upload error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

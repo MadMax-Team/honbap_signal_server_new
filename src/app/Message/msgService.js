@@ -80,3 +80,19 @@ exports.updateExitUserIdx = async function (roomId, remain, type) {
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+//약속 장소 생성
+exports.createPromise = async function (where,when,menu,userIdx,roomId){
+    try{
+        const connection = await pool.getConnection(async (conn) => conn);
+        const params = [where, when, menu,userIdx,roomId];
+        const createResult = await msgDao.createPromise(connection,params);
+
+        connection.release();
+
+        return createResult;
+    }
+    catch (err){
+        logger.error(`App - createPromise Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

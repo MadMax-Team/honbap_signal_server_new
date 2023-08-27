@@ -30,12 +30,11 @@ module.exports = function (app) {
     // 시그널 신청 9
     app.post("/signal/applylist", jwtMiddleware, signal.postSignalApply);
 
-    // 시그널 신청 취소 10
+    // 시그널 신청 취소 10 (by 시그널 신청자)
     app.delete("/signal/applylist", jwtMiddleware, signal.cancelSignalApply);
 
     // 이전 시그널 조회 11
     app.get("/signal/listed", jwtMiddleware, signal.getEndSignals);
-
 
     // 주황색 유저를 위한 Signal Promise 및 time 수정
     app.patch("/signal/list/orange", jwtMiddleware, signal.patchSignalContents);

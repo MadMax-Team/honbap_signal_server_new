@@ -84,6 +84,19 @@ async function deleteMsg(connection, roomId) {
 
     return row;
 }
+//약속 생성 *** 8 *** update 로 짜야할지 고민
+async function createPromise(connection,params) {
+    const query = `
+        UPDATE MessageRoom
+        SET where = ?,
+            when  = ?,
+            menu  = ?
+        WHERE userIdx = ?
+          AND roomId = ?;
+    `;
+    const [row] = await connection.query(query, params);
+    return row;
+}
 
 module.exports = {
     createMsgRoom,      // 1
@@ -93,4 +106,5 @@ module.exports = {
     getRoomIdx,         // 5
     updateExitUserIdx,  // 6
     deleteMsg,          // 7
+    createPromise,      //8
 };

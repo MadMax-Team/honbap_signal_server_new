@@ -141,9 +141,10 @@ async function existUserNickname(connection, userName) {
 }
 
 // 유저 개인정보 조회 *** 10 ***
+//유저id 없어져서 지움
 async function selectUserInfo(connection, userIdx) {
     const query = `
-                  SELECT email, userName, userId, birth,
+                  SELECT email, userName, birth,
                          phoneNum, sex, updateAt, createAt
                   FROM User
                   WHERE userIdx = ?;
@@ -151,6 +152,7 @@ async function selectUserInfo(connection, userIdx) {
     const [row] = await connection.query(query, userIdx);
     return row;
 }
+
 
 // 유저 마이페이지 조회 *** 11 ***
 async function selectUserProfile(connection, userIdx) {
@@ -218,6 +220,18 @@ async function selectKakaoId(connection, params) {
 
     return row;
 }
+//프로필 사진 수정
+async function updateUserImage(connection,params){
+    const query =`
+                UPDATE UserProfile
+                SET profileImg = ?
+                WHERE userIdx = ?;
+                `;
+    const [row] = await connection.query(query,params);
+
+    return row;
+
+}
 
 
 module.exports = {
@@ -238,4 +252,6 @@ module.exports = {
     updateUserProfile, // 13
     checkpassword, //14
     selectKakaoId, //15
+    updateUserImage, // 16
+
   };

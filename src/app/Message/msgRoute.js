@@ -18,5 +18,8 @@ module.exports = function (app) {
 
     // 쪽지 방 삭제
     app.delete("/msg", jwtMiddleware, msgController.deleteMsg);
+
+    // 쪽지 방 약속장소 생성
+    app.post("/msg/promise/:rommId",jwtMiddleware,msgController.createPromise)
     
 };

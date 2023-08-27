@@ -2,6 +2,10 @@ module.exports = function (app) {
   const user = require("./userController");
   const jwtMiddleware = require("../../../config/jwtMiddleware");
   const passport = require("passport");
+  const imageUploader = require("../../../config/ImageUploader");
+  // const multer = require('multer');
+  // const AWS = require('aws-sdk');
+  // const multerS3 = require('multer-s3');
 
   //client와 통신 부분.
 
@@ -14,7 +18,7 @@ module.exports = function (app) {
   // 3. 유저 프로필 등록 API
   app.post("/user/signup/plusinfo", user.postUserProfile);
 
-  // 4. 유저 인덱스 조회 API 
+  // 4. 유저 인덱스 조회 API
   app.get("/user/signup/:email", user.getUserIdx);
 
   // 5. 유저 개인정보 조회 API
@@ -36,7 +40,7 @@ module.exports = function (app) {
   app.get("/user/:nickName", user.getUserNickName);
 
   // 11. jwt에서 userIdx 반환
-  app.get("/user/getIdx", jwtMiddleware, user.getUserIdxFromJWT);
+  app.get("/user/getIdx",jwtMiddleware, user.getUserIdxFromJWT);
 
   // 12. 네이버 문자 인증 전송 API
   app.post("/app/send", user.send);
@@ -44,8 +48,18 @@ module.exports = function (app) {
   // 13. 네이버 문자 인증 검증 API
   app.post("/app/verify", user.verify);
 
+  //14. 유저프로필 이미지 API
+  app.patch("/user/myimage",jwtMiddleware,imageUploader.single('file'),user.patchUploadImage);
+  // app.post("/user/myimage",imageUploader.single('file'), async (req,res)=>{
+  //   console.log(req.file.location);
+  //   res.status(200).json({location : req.file.location})
+  // });
+//
 
-  // socket Test 
+  // 15. 유저프로필 이미지 수정 API
+
+
+  // socket Test
   app.get('/', function(req, res){
     res.sendFile( __dirname + '/test_socket.html')
   })

@@ -101,3 +101,30 @@ exports.deleteMsg = async function (req, res) {
 
   return res.send(baseResponse.SUCCESS);
 }
+
+// 약속장소 만들기
+
+exports.createPromise = async function (req,res) {
+  const userIdx = req.verifiedToken.userIdx;
+  const roomId = req.params.roomId;
+  const {
+    where,
+    when,
+    menu
+  } = req.body;
+  //빈 값 체크
+  if(!where){
+    return res.send(response(baseResponse.MSG_WHERE_EMPTY));
+  }
+  if(!when){
+    return res.send(response(baseResponse.MSG_WHEN_EMPTY));
+  }
+  if(!menu){
+    return res.send(response(baseResponse.MSG_MENU_EMPTY));
+  }
+
+  const promiseResponse = await msgService.createPromise(where,when,menu,userIdx,roomId);
+
+  return res.send(response(promiseResponse));
+
+}
