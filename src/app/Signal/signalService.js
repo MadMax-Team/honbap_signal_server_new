@@ -22,7 +22,10 @@ exports.createSignal = async function (userIdx, sigPromiseTime, sigPromiseArea) 
             checkSigWrite = 0;
         }
 
-        const signalRows = [userIdx, sigPromiseTime, sigPromiseArea, checkSigWrite];
+        let sigStatus = 1;
+        let sigMatchStatus = 0;
+
+        const signalRows = [userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, checkSigWrite];
         const connection = await pool.getConnection(async (conn) => conn);
         
         const createSignalResult = await signalDao.insertSignal(connection, signalRows);

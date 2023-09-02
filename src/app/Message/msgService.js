@@ -12,7 +12,7 @@ exports.createMsgRoom = async function (userIdx, matchIdx, roomId) {
     try {
         const params = [userIdx, matchIdx, roomId];
         const connection = await pool.getConnection(async (conn) => conn);
-        
+
         const createRoomResult = await msgDao.createMsgRoom(connection, params);
 
         connection.release();
@@ -25,11 +25,12 @@ exports.createMsgRoom = async function (userIdx, matchIdx, roomId) {
 }
 
 // 채팅 보내기
-exports.sendMsg = async function (roomId, senderIdx, text) {
+exports.sendMsg = async function (roomId, senderIdx, msg) {
     try {
-        const params = [roomId, senderIdx, text];
+        const params = [roomId, senderIdx, msg];
         const connection = await pool.getConnection(async (conn) => conn);
-        
+        //console.log(msg);
+
         const sendMsgResult = await msgDao.sendMsg(connection, params);
 
         connection.release();
@@ -45,7 +46,7 @@ exports.sendMsg = async function (roomId, senderIdx, text) {
 exports.deleteMsg = async function (roomId) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
-        
+
         const deleteMsgResult = await msgDao.deleteMsg(connection, roomId);
 
         connection.release();
@@ -69,7 +70,7 @@ exports.updateExitUserIdx = async function (roomId, remain, type) {
         }
 
         const connection = await pool.getConnection(async (conn) => conn);
-        
+
         const updateExitUserIdx = await msgDao.updateExitUserIdx(connection, params);
 
         connection.release();
@@ -77,6 +78,22 @@ exports.updateExitUserIdx = async function (roomId, remain, type) {
     }
     catch (err) {
         logger.error(`App - updateExitUserIdx Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+//약속 장소 생성
+exports.createPromise = async function (where,when,menu,userIdx,roomId){
+    try{
+        const connection = await pool.getConnection(async (conn) => conn);
+        const params = [where, when, menu,userIdx,roomId];
+        const createResult = await msgDao.createPromise(connection,params);
+
+        connection.release();
+
+        return createResult;
+    }
+    catch (err){
+        logger.error(`App - createPromise Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 }
