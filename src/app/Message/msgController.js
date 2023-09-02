@@ -36,7 +36,7 @@ exports.sendMsg = async function (req, res) {
   const roomId = req.params.roomId;
   const {msg}= req.body;
 
-  console.log(msg);
+  //console.log(msg);
 
   if(!senderIdx) {
     return res.send(response(baseResponse.MSG_SENDERIDX_EMPTY));
@@ -126,7 +126,7 @@ exports.createPromise = async function (req,res) {
   if(!menu){
     return res.send(response(baseResponse.MSG_MENU_EMPTY));
   }
-  console.log(where,when,menu,userIdx,roomId)
+  //console.log(where,when,menu,userIdx,roomId)
 
   const promiseResponse = await msgService.createPromise(where,when,menu,userIdx,roomId);
 

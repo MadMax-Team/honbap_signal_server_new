@@ -29,7 +29,7 @@ exports.sendMsg = async function (roomId, senderIdx, msg) {
     try {
         const params = [roomId, senderIdx, msg];
         const connection = await pool.getConnection(async (conn) => conn);
-        console.log(msg);
+        //console.log(msg);
 
         const sendMsgResult = await msgDao.sendMsg(connection, params);
 
