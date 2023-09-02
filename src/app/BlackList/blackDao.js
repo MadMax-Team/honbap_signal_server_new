@@ -11,6 +11,7 @@ async function insertBlack(connection, params) {
                     VALUES (?, ?, ?);
                     `;
     const [row] = await connection.query(query, params);
+    console.log(params[2])
     return row;
 }
 

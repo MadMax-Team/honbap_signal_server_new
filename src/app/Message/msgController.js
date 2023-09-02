@@ -34,19 +34,21 @@ exports.getMsgRoom = async function (req, res) {
 exports.sendMsg = async function (req, res) {
   const senderIdx = req.verifiedToken.userIdx;
   const roomId = req.params.roomId;
-  const text = req.body;
+  const {msg}= req.body;
+
+  console.log(msg);
 
   if(!senderIdx) {
     return res.send(response(baseResponse.MSG_SENDERIDX_EMPTY));
   }
-  if(!text) {
+  if(!msg) {
     return res.send(response(baseResponse.MSG_TEXT_EMPTY));
   }
-  if(text > 500) {
+  if(msg > 500) {
     return res.send(response(baseResponse.MSG_TEXT_OVER));
   }
 
-  const result = await msgService.sendMsg(roomId, senderIdx, text);
+  const result = await msgService.sendMsg(roomId, senderIdx, msg);
   return res.send(baseResponse.SUCCESS);
 }
 
@@ -58,6 +60,7 @@ exports.getMsg = async function (req, res) {
   if(!roomId) {
     return res.send(response(baseResponse.MSG_ROOMID_EMPTY));
   }
+  console.log(roomId)
 
   const arr = roomId.split("_");
   const userIdx = arr[0];
@@ -97,7 +100,7 @@ exports.deleteMsg = async function (req, res) {
     const result = await msgService.updateExitUserIdx(roomId, MsgRoomMatchIdx, 1);
   } else if(userIdx == matchIdxAtRoom) {
     const result = await msgService.updateExitUserIdx(roomId, MsgRoomUserIdx, 2);
-  } 
+  }
 
   return res.send(baseResponse.SUCCESS);
 }
@@ -107,6 +110,7 @@ exports.deleteMsg = async function (req, res) {
 exports.createPromise = async function (req,res) {
   const userIdx = req.verifiedToken.userIdx;
   const roomId = req.params.roomId;
+  console.log(roomId);
   const {
     where,
     when,
@@ -122,9 +126,10 @@ exports.createPromise = async function (req,res) {
   if(!menu){
     return res.send(response(baseResponse.MSG_MENU_EMPTY));
   }
+  console.log(where,when,menu,userIdx,roomId)
 
   const promiseResponse = await msgService.createPromise(where,when,menu,userIdx,roomId);
 
-  return res.send(response(promiseResponse));
+  return res.send(baseResponse.SUCCESS);
 
 }

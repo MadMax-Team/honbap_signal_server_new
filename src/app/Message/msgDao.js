@@ -5,9 +5,9 @@ async function createMsgRoom(connection, params) {
                     INSERT INTO MessageRoom(userIdx, matchIdx, roomId)
                     VALUES(?,?,?);
                     `;
-  
+
     const [row] = await connection.query(query, params);
-    
+
     return row;
 }
 
@@ -25,12 +25,12 @@ async function getMsgRoom(connection, params) {
 // 쪽지 보내기 *** 3 ***
 async function sendMsg(connection, params) {
     const query =   `
-                    INSERT INTO Message(roomId, senderIdx, text)
+                    INSERT INTO Message(roomId, senderIdx, msg)
                     VALUES(?,?,?);
                     `;
-  
+
     const [row] = await connection.query(query, params);
-    
+
     return row;
 }
 
@@ -41,14 +41,14 @@ async function getMsg(connection, params) {
                         (CASE
                             WHEN senderIdx = ? THEN 'send'
                             WHEN senderIdx = ? THEN 'receive'
-                        END) AS status, text, sendAt
+                        END) AS status, msg, sendAt
                     FROM Message
                     WHERE roomId = ?
                     ORDER BY sendAt ASC;
                     `;
-  
+
     const [row] = await connection.query(query, params);
-    
+
     return row;
 }
 
@@ -88,11 +88,8 @@ async function deleteMsg(connection, roomId) {
 async function createPromise(connection,params) {
     const query = `
         UPDATE MessageRoom
-        SET where = ?,
-            when  = ?,
-            menu  = ?
-        WHERE userIdx = ?
-          AND roomId = ?;
+        SET new_where = ?, new_when  = ?, menu  = ?
+        WHERE userIdx = ? AND roomId = ?;
     `;
     const [row] = await connection.query(query, params);
     return row;

@@ -369,7 +369,7 @@ exports.patchUploadImage = async function(req,res){
   }
   const uploadResponse = await userService.uploadImage(userIdxFromJwt,location);
 
-  return res.send(response(baseResponse.SUCCESS,'URL: '+uploadResponse[0]+'     userIdx: '+ +uploadResponse[1]));
+  return res.send(uploadResponse[0]);
 }
 
 
