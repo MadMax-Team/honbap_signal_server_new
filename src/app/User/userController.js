@@ -186,6 +186,7 @@ exports.getUserIdx = async function (req, res) {
  */
 exports.getUserInfo = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
+  const token = req.headers['x-access-token']
   console.log(userIdxFromJWT)
 
   //validation
@@ -333,12 +334,13 @@ exports.patchUserProfile = async function (req, res) {
 /**
  * API No. 13
  * API Name : jwt에서 userIdx 반환
- * [GET] /app/user/getIdx
+ * [GET] app/user/getIdx
  */
 exports.getUserIdxFromJWT = async function (req, res) {
+  console.log("userIdxFromJwt");
   const userIdxFromJwt = req.verifiedToken.userIdx;
-  await userProvider.getUserIdxFromJWT();
-  console.log(userIdxFromJwt);
+  // await userProvider.getUserIdxFromJWT();
+  console.log("userIdxF");
   //validation
   if (!userIdxFromJwt) {
     return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));  //2042

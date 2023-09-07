@@ -40,7 +40,7 @@ module.exports = function (app) {
   app.get("/user/:nickName", user.getUserNickName);
 
   // 11. jwt에서 userIdx 반환
-  app.get("/user/getIdx",jwtMiddleware, user.getUserIdxFromJWT);
+  app.get("/app/user/getIdx",jwtMiddleware, user.getUserIdxFromJWT);
 
   // 12. 네이버 문자 인증 전송 API
   app.post("/app/send", user.send);

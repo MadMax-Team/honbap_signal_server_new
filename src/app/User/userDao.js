@@ -19,7 +19,7 @@ async function existUserId(connection, userId) {
 async function existUserEmail(connection, email) {
 
     const query = `
-                  SELECT User.email
+                  SELECT email
                   FROM User
                   WHERE User.email = ?;
                   `;
