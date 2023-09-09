@@ -133,7 +133,7 @@ exports.getUserProfile = async function (userIdx) {
     );
     connection.release();
 
-    return userProfileResult[0];
+    return userProfileResult;
   } catch (err) {
     logger.error(`getUserProfile Provider error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
