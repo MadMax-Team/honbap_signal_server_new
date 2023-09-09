@@ -50,6 +50,8 @@ hmac.update(accessKey);
 const hash = hmac.finalize();
 const signature = hash.toString(CryptoJS.enc.Base64);
 
+
+
 //controller : 판단 부분.
 /**
  * API No. 1
@@ -184,6 +186,7 @@ exports.getUserIdx = async function (req, res) {
  */
 exports.getUserInfo = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
+  const token = req.headers['x-access-token']
   console.log(userIdxFromJWT)
 
   //validation
@@ -331,11 +334,13 @@ exports.patchUserProfile = async function (req, res) {
 /**
  * API No. 13
  * API Name : jwt에서 userIdx 반환
- * [GET] /app/user/getIdx
+ * [GET] app/user/getIdx
  */
 exports.getUserIdxFromJWT = async function (req, res) {
-  const userIdxFromJwt = req.verifiedToken.userIdx;;
-  console.log(userIdxFromJwt)
+  console.log("userIdxFromJwt");
+  const userIdxFromJwt = req.verifiedToken.userIdx;
+  // await userProvider.getUserIdxFromJWT();
+  console.log("userIdxF");
   //validation
   if (!userIdxFromJwt) {
     return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));  //2042
@@ -347,6 +352,26 @@ exports.getUserIdxFromJWT = async function (req, res) {
   console.log("userIdx:", userIdxFromJwt);
   const userIdx = userIdxFromJwt;
   return res.send(response(baseResponse.SUCCESS, userIdx));
+};
+
+/**
+ * API No. 14
+ * API Name : 유저 이미지사진 수정
+ * [patch] /user/myimage
+ */
+exports.patchUploadImage = async function(req,res){
+  const userIdxFromJwt = req.verifiedToken.userIdx;
+  const location = req.file.location;
+
+  if (!userIdxFromJwt) {
+    return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));  //2042
+  }
+  if (!location){
+    return res.sen(errResponse(baseResponse.USER_IMAGE_EMPTY)); // 2044
+  }
+  const uploadResponse = await userService.uploadImage(userIdxFromJwt,location);
+
+  return res.send(uploadResponse[0]);
 }
 
 
@@ -474,3 +499,5 @@ exports.verify = async function (req, res) {
     return res.send(response(baseResponse.SMS_VERIFY_SUCCESS));
   }
 };
+
+

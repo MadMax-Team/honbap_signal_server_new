@@ -236,6 +236,11 @@ module.exports = {
     code: 2043,
     message: "userIdx는 0보다 큰 값으로 입력해주세요.",
   },
+  USER_IMAGE_EMPTY: {
+    isSuccess: false,
+    code: 2044,
+    message: "업로드 사진이 없습니다.",
+  },
 
   // Response error
   SIGNUP_REDUNDANT_USERID: {

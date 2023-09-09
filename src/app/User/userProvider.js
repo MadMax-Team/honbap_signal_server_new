@@ -153,4 +153,5 @@ exports.getKakaoId = async function (provider, id) {
     logger.error(`getKakaoId Provider error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   }
-}
+};
+
