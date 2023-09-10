@@ -277,6 +277,7 @@ exports.patchUserInfo = async function (req, res) {
 exports.patchUserProfile = async function (req, res) {
   const userIdxFromJwt = req.verifiedToken.userIdx;
   const {
+    nickName,
     profileImg,
     taste,
     hateFood,
@@ -296,6 +297,7 @@ exports.patchUserProfile = async function (req, res) {
   }
 
   const updateUserProfile = await userService.updateUserProfile(
+      nickName,
     profileImg,
     taste,
     hateFood,

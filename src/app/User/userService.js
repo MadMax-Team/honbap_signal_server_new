@@ -26,7 +26,7 @@ exports.createUsers = async function (email, password, userName, birth, phoneNum
         const emailRows = await userProvider.emailCheck(email);
         if (emailRows.length > 0) {
             return errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL); }
-        
+
 
         // const nickNameRows = await userProvider.nickNameCheck(nickName);
         // if (nickNameRows.length > 0)
@@ -132,11 +132,11 @@ exports.updateUserInfo = async function(userName, birth, userIdx) {
 }
 
 // 유저 프로필 변경
-exports.updateUserProfile = async function(profileImg, taste, hateFood, interest, avgSpeed, preferArea, mbti, userIntroduce, userIdx) {
+exports.updateUserProfile = async function(nickName,profileImg, taste, hateFood, interest, avgSpeed, preferArea, mbti, userIntroduce, userIdx) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
 
-        const params = [profileImg, taste, hateFood, interest,avgSpeed,
+        const params = [nickName,profileImg, taste, hateFood, interest,avgSpeed,
                         preferArea, mbti, userIntroduce, userIdx];
         const result = await userDao.updateUserProfile(connection, params);
         return result;

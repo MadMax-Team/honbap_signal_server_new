@@ -182,7 +182,7 @@ async function updatePassword(connection, password, userIdx) {
 async function updateUserProfile(connection, params) {
     const query = `
                   UPDATE UserProfile
-                  SET profileImg = ?, taste = ?, hateFood = ?, 
+                  SET nickName = ?,profileImg = ?, taste = ?, hateFood = ?, 
                       interest = ?, avgSpeed = ?, preferArea = ?,
                       mbti = ?, userIntroduce = ?, updateAt = default
                   WHERE userIdx = ?;
