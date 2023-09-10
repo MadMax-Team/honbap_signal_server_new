@@ -157,7 +157,7 @@ async function selectUserInfo(connection, userIdx) {
 // 유저 마이페이지 조회 *** 11 ***
 async function selectUserProfile(connection, userIdx) {
     const query = `
-                  SELECT profileImg, taste, hateFood, interest,
+                  SELECT nickName,profileImg, taste, hateFood, interest,
                          avgSpeed, preferArea, mbti, userIntroduce, updateAt
                   FROM UserProfile
                   WHERE userIdx = ?;
