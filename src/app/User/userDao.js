@@ -73,7 +73,7 @@ async function selectUserIdx(connection, email) {
                   WHERE email = ?;
                   `;
 
-    const row = await connection.query(query, email);
+    const [row] = await connection.query(query, email);
 
     return row;
 }
@@ -232,6 +232,16 @@ async function updateUserImage(connection,params){
     return row;
 
 }
+//유저 프로필 null 값으로 채워넣기
+async function insertUsernull(connection, userIdx) {
+    const query =   `
+                    INSERT INTO UserProfile
+                    (userIdx) VALUES (?);
+                    `;
+    const [row] = await connection.query(query, userIdx);
+    return row;
+}
+
 
 
 module.exports = {
@@ -253,5 +263,6 @@ module.exports = {
     checkpassword, //14
     selectKakaoId, //15
     updateUserImage, // 16
+    insertUsernull, //17
 
   };
