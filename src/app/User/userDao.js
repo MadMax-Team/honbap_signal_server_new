@@ -73,7 +73,7 @@ async function selectUserIdx(connection, email) {
                   WHERE email = ?;
                   `;
 
-    const [row] = await connection.query(query, email);
+    const row = await connection.query(query, email);
 
     return row;
 }

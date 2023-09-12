@@ -98,7 +98,7 @@ exports.getUserIdx = async function (email) {
     const userIdxCheckResult = await userDao.selectUserIdx(connection, email);
     connection.release();
 
-    console.log(userIdxCheckResult[0])
+    //console.log(userIdxCheckResult[0])
 
     return userIdxCheckResult[0];
   } catch (err) {
