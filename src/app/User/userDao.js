@@ -73,7 +73,7 @@ async function selectUserIdx(connection, email) {
                   WHERE email = ?;
                   `;
 
-    const row = await connection.query(query, email);
+    const [row]= await connection.query(query, email);
 
     return row;
 }
@@ -233,6 +233,18 @@ async function updateUserImage(connection,params){
 
 }
 
+//회원가입할때 프로필 널값 넣기
+async function insertUsernull(connection,idx){
+    const query = `
+                INSERT INTO UserProfile
+                (userIdx)
+                VALUES (?);
+                `;
+    const [row] = await connection.query(query,idx);
+
+    return row;
+}
+
 
 module.exports = {
     existUserId, // 1
@@ -253,5 +265,6 @@ module.exports = {
     checkpassword, //14
     selectKakaoId, //15
     updateUserImage, // 16
+    insertUsernull, //17
 
   };

@@ -74,7 +74,7 @@ exports.signin = async function (req, res) {
  */
 
 exports.postUsers = async function (req, res) {
-  const { email, password, userName, birth, phoneNum, sex } = req.body;
+  const { email, password, userName, birth, phoneNum, sex} = req.body;
   // email checking and print error message
 
   // 빈 값 체크

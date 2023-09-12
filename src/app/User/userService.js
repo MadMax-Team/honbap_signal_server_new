@@ -50,8 +50,15 @@ exports.createUsers = async function (email, password, userName, birth, phoneNum
         const insertUserInfoParams = [email, hashedPassword, userName, birth, phoneNum, sex];
 
 
+
+
+
         const connection = await pool.getConnection(async (conn) => conn);
         const emailResult = await userDao.insertUserInfo(connection, insertUserInfoParams);
+        const [insertUserProfileidx] =await userDao.selectUserIdx(connection,email);
+        console.log(insertUserProfileidx.userIdx);
+        const insertUserProfilenull = await userDao.insertUsernull(connection,insertUserProfileidx.userIdx);
+
         connection.release();
         return response(baseResponse.SUCCESS);
 
