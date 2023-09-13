@@ -217,7 +217,7 @@ exports.getUserProfile = async function (req, res) {
   if (userIdxFromJWT <= 0) {
     return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));  //2043
   }
-  
+
   const userMypageResponse = await userProvider.getUserProfile(userIdxFromJWT);
 
   return res.send(response(baseResponse.SUCCESS, userMypageResponse));
