@@ -18,7 +18,7 @@ async function insertSignal(connection, params) {
   const query = `
                   INSERT INTO Signaling
                   (userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, checkSigWrite)
-                  VALUES (?, ?, ?, ?);
+                  VALUES (?, ?, ?, ?,?,?);
                   `;
   const [row] = await connection.query(query, params);
 
@@ -28,11 +28,11 @@ async function insertSignal(connection, params) {
 // 켜져 있는 시그널 조회 *** 2 ***
 async function selectSignalList(connection, userIdx) {
   const query = `
-                    SELECT up1.userName as userNickName, up2.userName as matchingNickName,
+                    SELECT up1.nickName as userNickName, up2.nickName as matchingNickName,
                     s.sigPromiseTime, s.sigPromiseArea, s.checkSigWrite, s.sigStart, s.updateAt
                     FROM  Signaling AS s
-                        LEFT JOIN User AS up1 ON s.userIdx = up1.userIdx
-                        LEFT JOIN User AS up2 ON s.matchIdx = up2.userIdx
+                        LEFT JOIN UserProfile AS up1 ON s.userIdx = up1.userIdx
+                        LEFT JOIN UserProfile AS up2 ON s.matchIdx = up2.userIdx
                     WHERE s.userIdx = ? AND s.sigStatus = 1
                     ORDER BY s.signalIdx DESC;
                     `;

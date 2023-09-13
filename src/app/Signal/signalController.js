@@ -79,11 +79,11 @@ exports.postSigMatch = async function (req, res) {
   const { matchIdx } = req.body;
 
   const matching = await signalService.matching(matchIdx, userIdxFromJWT);
-  
+
   /*console.log("here1")
   const createChat = await chatService.createChatRoom(userIdxFromJWT, matchIdx);
   console.log("here2")*/
-  
+
   return res.send(baseResponse.SUCCESS);
 };
 
@@ -223,7 +223,7 @@ exports.getMySignal = async function (req, res) {
   if (!resultNickName.length) {
     return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST));
   }
-   
+
   const resultInfo = await signalProvider.getInfoFromNickName(nickName);
 
   return res.send(response(baseResponse.SUCCESS, resultInfo));
