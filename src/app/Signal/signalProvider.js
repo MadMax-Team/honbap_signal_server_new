@@ -5,6 +5,24 @@ const baseResponse = require("../../../config/baseResponseStatus");
 
 const signalDao = require("./signalDao");
 
+// 시그널 상태 조회
+exports.getSignalStatus = async function (userIdx) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const userIdxCheckResult = await signalDao.getSignalStatus(
+      connection,
+      userIdx
+    );
+    connection.release();
+
+    return userIdxCheckResult[0];
+  } catch (err) {
+    logger.error(`getSignalList Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}
+
 // 시그널 조회
 exports.getSignalList = async function (userIdx) {
   try {
