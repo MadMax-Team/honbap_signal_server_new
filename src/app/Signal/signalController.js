@@ -18,8 +18,11 @@ const regexEmail = require("regex-email");
  * [POST] /signal/list
  */
 exports.postSignal = async function (req, res) {
-  const userIdxFromJWT = req.verifiedToken.userIdx;
+
   const { sigPromiseTime, sigPromiseArea} = req.body;
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  
+  console.log(req.body);
   // 주석처리 한 부분은 나중에 다시 수정할 예정
 /*
   if (!sigPromiseArea)
@@ -31,6 +34,7 @@ exports.postSignal = async function (req, res) {
   if (arzoneListResult.length <= 0)
     return res.send(response(baseResponse.LOCATION_IS_NOT_IN_ARZONE));
 */
+
   const signalup = await signalService.createSignal(
     userIdxFromJWT,
     sigPromiseTime,
@@ -39,6 +43,18 @@ exports.postSignal = async function (req, res) {
 
   return res.send(baseResponse.SUCCESS);
 };
+
+/**
+ * API No. 
+ * API Name : 시그널 상태조회 API
+ * [GET] /signal/status
+ */
+exports.getSignalStatus = async function (req, res){
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  const result = await signalProvider.getSignalStatus(userIdxFromJWT);
+  return res.send(response(baseResponse.SUCCESS, result))
+}
+
 
 /**
  * API No. 2

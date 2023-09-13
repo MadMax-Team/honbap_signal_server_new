@@ -6,6 +6,9 @@ module.exports = function (app) {
     // 시그널 생성 1 
     app.post("/signal/list", jwtMiddleware, signal.postSignal);
 
+    // 시그널 상태 조회
+    app.get("/signal/status", jwtMiddleware, signal.getSignalStatus);
+
     // 켜져 있는 시그널 확인 2
     app.get("/signal/list", jwtMiddleware, signal.getSignalList);
 
