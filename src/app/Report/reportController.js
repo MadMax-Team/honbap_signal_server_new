@@ -11,11 +11,12 @@ const regexEmail = require("regex-email");
 
 // 신고 등록
 exports.postReport = async function (req, res) {
-    const userIdx = req.params.userIdx;
+    const userIdxFromJWT = req.verifiedToken.userIdx;
+    //const userIdx = req.params.userIdx;
     const {reportedIdx, shortReason, specificReason} = req.body;
 
     const signalup = await reportService.createReport(
-        userIdx, reportedIdx, shortReason, specificReason
+        userIdxFromJWT, reportedIdx, shortReason, specificReason
     );
 
     return res.send(baseResponse.SUCCESS);
