@@ -19,7 +19,7 @@ const regexEmail = require("regex-email");
  */
 exports.postSignal = async function (req, res) {
 
-  const { sigPromiseTime, sigPromiseArea} = req.body;
+  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu} = req.body;
   const userIdxFromJWT = req.verifiedToken.userIdx;
   
   console.log(req.body);
@@ -38,7 +38,8 @@ exports.postSignal = async function (req, res) {
   const signalup = await signalService.createSignal(
     userIdxFromJWT,
     sigPromiseTime,
-    sigPromiseArea
+    sigPromiseArea,
+    sigPromiseMenu
   );
 
   return res.send(baseResponse.SUCCESS);

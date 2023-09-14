@@ -17,8 +17,8 @@ signal table -  userIdx : User.userIdx
 async function insertSignal(connection, params) {
   const query = `
                   INSERT INTO Signaling
-                  (userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, checkSigWrite)
-                  VALUES (?, ?, ?, ?, ?, ?);
+                  (userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, sigPromiseMenu, checkSigWrite)
+                  VALUES (?, ?, ?, ?, ?, ?, ?);
                   `;
   const [row] = await connection.query(query, params);
 
