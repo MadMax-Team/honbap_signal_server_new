@@ -18,7 +18,7 @@ exports.createSignal = async function (userIdx, sigPromiseTime, sigPromiseArea) 
     try {
         let checkSigWrite = 1;
 
-        if(sigPromiseTime == "" && sigPromiseArea == "") {
+        if(sigPromiseTime == null && sigPromiseArea == null) {
             checkSigWrite = 0;
         }
 
@@ -123,9 +123,9 @@ exports.signalOn = async function (userIdx) {
 }
 
 // 시그널 리스트 신청
-exports.signalApply = async function (signalIdx, applyedIdx, userIdx) {
+exports.signalApply = async function (userIdx, applyedIdx) {
     try {
-        const params = [signalIdx, applyedIdx, userIdx];
+        const params = [userIdx, applyedIdx];
         const connection = await pool.getConnection(async (conn) => conn);
         const result = await signalDao.postSignalApply(connection, params);
         connection.release;
