@@ -18,10 +18,21 @@ async function insertSignal(connection, params) {
   const query = `
                   INSERT INTO Signaling
                   (userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, checkSigWrite)
-                  VALUES (?, ?, ?, ?,?,?);
+                  VALUES (?, ?, ?, ?, ?, ?);
                   `;
   const [row] = await connection.query(query, params);
 
+  return row;
+}
+
+// 시그널 상태 조회
+async function getSignalStatus(connection, userIdx) {
+  const query = `
+                    SELECT s.sigStatus, s.sigMatchStatus
+                    FROM Signaling AS s
+                    WHERE s.userIdx = userIdx; 
+  `
+  const [row] = await connection.query(query, userIdx);
   return row;
 }
 
@@ -204,6 +215,7 @@ async function getInfoFromNickName(connection, nickName) {
 
 module.exports = {
   insertSignal, // 1
+  getSignalStatus,
   selectSignalList, // 2
   updateSignal, // 3
   updateSigMatch, // 4
