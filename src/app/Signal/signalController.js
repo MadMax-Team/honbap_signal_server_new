@@ -75,11 +75,12 @@ exports.getSignalList = async function (req, res) {
  */
 exports.postSignalList = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { sigPromiseTime, sigPromiseArea, sigStart } = req.body;
+  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, sigStart } = req.body;
 
   const modifySigList = await signalService.modifySigList(
     sigPromiseTime,
     sigPromiseArea,
+    sigPromiseMenu,
     sigStart,
     userIdxFromJWT
   );

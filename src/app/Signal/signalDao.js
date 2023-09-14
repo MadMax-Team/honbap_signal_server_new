@@ -56,8 +56,8 @@ async function selectSignalList(connection, userIdx) {
 async function updateSignal(connection, params) {
   const query = `
                   UPDATE Signaling
-                  SET sigPromiseTime = ?, sigPromiseArea = ?, sigStart = ?, updateAt = default
-                  WHERE userIdx = ? AND sigStatus = 1;
+                  SET sigPromiseTime = ?, sigPromiseArea = ?, sigPromiseMenu = ?, sigStart = ?, updateAt = default
+                  WHERE userIdx = ? AND sigStatus = 1 AND sigMatchStatus = 0;
                   `;
   const [row] = await connection.query(query, params);
 
