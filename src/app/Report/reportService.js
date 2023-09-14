@@ -14,11 +14,11 @@ const { connect } = require("http2");
 
 
 // 신고 등록
-exports.createReport = async function (userIdxFromJWT, reportedIdx, shortReason, specificReason) {
+exports.createReport = async function (userIdxFromJWT, shortReason, specificReason) {
     try {
-        const params = [userIdxFromJWT, reportedIdx, shortReason, specificReason];
+        const params = [userIdxFromJWT, shortReason, specificReason];
         const connection = await pool.getConnection(async (conn) => conn);
-        
+
         const createSignalResult = await reportDao.insertReport(connection, params);
 
         connection.release();
