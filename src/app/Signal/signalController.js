@@ -159,9 +159,9 @@ exports.getSignalApply = async function (req, res) {
  */
 exports.postSignalApply = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { signalIdx, applyedIdx } = req.body;
-
-  const apply = await signalService.signalApply(signalIdx, applyedIdx, userIdxFromJWT);
+  const { userIdx, applyedIdx } = req.body;
+  console.log(req.body)
+  const apply = await signalService.signalApply(userIdx, applyedIdx, userIdxFromJWT);
 
   return res.send(baseResponse.SUCCESS);
 };

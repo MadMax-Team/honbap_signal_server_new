@@ -113,8 +113,8 @@ async function signalOn(connection, userIdx) {
 async function postSignalApply(connection, params) {
   const query = `
                     INSERT INTO SignalApply
-                    (signalIdx, applyedIdx, userIdx) 
-                    VALUES (?, ?, ?);
+                    (userIdx, applyedIdx) 
+                    VALUES (?, ?);
                     `;
   const [row] = await connection.query(query, params);
   return row;
@@ -125,9 +125,9 @@ async function postSignalApply(connection, params) {
 // applyIdx 와 applyTime 차이점이 있는건지 모르겟음.. 일단 applytTime 속성 없어서 정렬 제외하고 실행
 async function getSignalApply(connection, userIdx) {
   const query = `
-                  SELECT DISTINCT userName
+                  SELECT DISTINCT userIdx
                   FROM Signaling AS s, SignalApply AS sa, User AS up
-                  WHERE s.sigStatus = 1 AND sa.userIdx = ? AND 
+                  WHERE s.sigStatus = 1 AND s.sigMatchStatus = 0 AND sa.userIdx = ? AND 
                           sa.applyedIdx = up.userIdx;
                 `;
   const [row] = await connection.query(query, userIdx);
@@ -148,7 +148,7 @@ async function deleteSignalApply(connection, userIdx) {
 async function cancelSignalApply(connection, params) {
   const query = `
                     DELETE FROM SignalApply
-                    WHERE userIdx = ? AND applyedIdx = ?;
+                    WHERE userIdx = ? OR applyedIdx = ?;
                     `;
   const [row] = await connection.query(query, params);
   return row;
