@@ -52,7 +52,19 @@ async function selectSignalList(connection, userIdx) {
   return row;
 }
 
-// 시그널 수정 *** 3 ***
+// 시그널 정보 조회 
+async function getSignalInfo(connection, params) {
+  const query = `
+                  SELECT s.sigPromiseTime, s.sigPromiseArea, s.sigPromiseMenu
+                  FROM Signaling AS s
+                  WHERE s.userIdx = ? AND s.sigStatus = 1 AND s.sigMatchStatus = 0;
+                `;
+  const [row] = await connection.query(query, params);
+
+  return row;             
+}
+
+// 시그널 정보 수정 *** 3 ***
 async function updateSignal(connection, params) {
   const query = `
                   UPDATE Signaling
@@ -217,6 +229,7 @@ module.exports = {
   insertSignal, // 1
   getSignalStatus,
   selectSignalList, // 2
+  getSignalInfo,
   updateSignal, // 3
   updateSigMatch, // 4
   signalOff, // 5

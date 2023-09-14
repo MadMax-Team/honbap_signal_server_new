@@ -23,6 +23,24 @@ exports.getSignalStatus = async function (userIdx) {
   }
 }
 
+// 시그널 정보 조회
+exports.getSignalInfo = async function (userIdx) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const signalInfoCheckResult = await signalDao.getSignalInfo(
+      connection,
+      userIdx
+    );
+    connection.release();
+
+    return signalInfoCheckResult[0];
+  } catch (err) {
+    logger.error(`getSignalInfo Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }  
+}
+
 // 시그널 조회
 exports.getSignalList = async function (userIdx) {
   try {
