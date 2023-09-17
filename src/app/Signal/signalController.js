@@ -19,7 +19,7 @@ const regexEmail = require("regex-email");
  */
 exports.postSignal = async function (req, res) {
 
-  const { sigPromiseTime, sigPromiseArea} = req.body;
+  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu} = req.body;
   const userIdxFromJWT = req.verifiedToken.userIdx;
   
   console.log(req.body);
@@ -38,7 +38,8 @@ exports.postSignal = async function (req, res) {
   const signalup = await signalService.createSignal(
     userIdxFromJWT,
     sigPromiseTime,
-    sigPromiseArea
+    sigPromiseArea,
+    sigPromiseMenu
   );
 
   return res.send(baseResponse.SUCCESS);
@@ -68,17 +69,29 @@ exports.getSignalList = async function (req, res) {
 };
 
 /**
+ * API No. 
+ * API Name : 시그널 정보 조회 API
+ * [GET] /signal/info
+ */
+exports.getSignalInfo = async function (req, res) {
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  const result = await signalProvider.getSignalInfo(userIdxFromJWT);
+  return res.send(response(baseResponse.SUCCESS, result));
+};
+
+/**
  * API No. 3
- * API Name : 시그널 수정 API
+ * API Name : 시그널 정보 수정 API
  * [PATCH] /signal/list
  */
 exports.postSignalList = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { sigPromiseTime, sigPromiseArea, sigStart } = req.body;
+  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, sigStart } = req.body;
 
   const modifySigList = await signalService.modifySigList(
     sigPromiseTime,
     sigPromiseArea,
+    sigPromiseMenu,
     sigStart,
     userIdxFromJWT
   );

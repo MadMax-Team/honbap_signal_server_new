@@ -17,8 +17,8 @@ signal table -  userIdx : User.userIdx
 async function insertSignal(connection, params) {
   const query = `
                   INSERT INTO Signaling
-                  (userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, checkSigWrite)
-                  VALUES (?, ?, ?, ?, ?, ?);
+                  (userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, sigPromiseMenu, checkSigWrite)
+                  VALUES (?, ?, ?, ?, ?, ?, ?);
                   `;
   const [row] = await connection.query(query, params);
 
@@ -52,12 +52,24 @@ async function selectSignalList(connection, userIdx) {
   return row;
 }
 
-// 시그널 수정 *** 3 ***
+// 시그널 정보 조회 
+async function getSignalInfo(connection, params) {
+  const query = `
+                  SELECT s.sigPromiseTime, s.sigPromiseArea, s.sigPromiseMenu
+                  FROM Signaling AS s
+                  WHERE s.userIdx = ? AND s.sigStatus = 1 AND s.sigMatchStatus = 0;
+                `;
+  const [row] = await connection.query(query, params);
+
+  return row;             
+}
+
+// 시그널 정보 수정 *** 3 ***
 async function updateSignal(connection, params) {
   const query = `
                   UPDATE Signaling
-                  SET sigPromiseTime = ?, sigPromiseArea = ?, sigStart = ?, updateAt = default
-                  WHERE userIdx = ? AND sigStatus = 1;
+                  SET sigPromiseTime = ?, sigPromiseArea = ?, sigPromiseMenu = ?, sigStart = ?, updateAt = default
+                  WHERE userIdx = ? AND sigStatus = 1 AND sigMatchStatus = 0;
                   `;
   const [row] = await connection.query(query, params);
 
@@ -217,6 +229,7 @@ module.exports = {
   insertSignal, // 1
   getSignalStatus,
   selectSignalList, // 2
+  getSignalInfo,
   updateSignal, // 3
   updateSigMatch, // 4
   signalOff, // 5
