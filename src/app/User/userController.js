@@ -309,7 +309,7 @@ exports.patchUserProfile = async function (req, res) {
     userIdxFromJwt
   );
 
-  return res.send(response(baseResponse.SUCCESS));
+  return res.send(updateUserProfile);
 };
 
 /**

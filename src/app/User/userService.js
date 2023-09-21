@@ -39,7 +39,6 @@ exports.createUsers = async function (email, password, userName, birth, phoneNum
 
 
 
-
         // 비밀번호 암호화
         const hashedPassword = await crypto
             .createHash("sha512")
@@ -51,13 +50,12 @@ exports.createUsers = async function (email, password, userName, birth, phoneNum
 
 
 
-
-
         const connection = await pool.getConnection(async (conn) => conn);
         const emailResult = await userDao.insertUserInfo(connection, insertUserInfoParams);
-        const [insertUserProfileidx] =await userDao.selectUserIdx(connection,email);
-        console.log(insertUserProfileidx.userIdx);
-        const insertUserProfilenull = await userDao.insertUsernull(connection,insertUserProfileidx.userIdx);
+
+        const userIdxRow = await userProvider.getUserIdx(email);
+        //console.log(userIdxRow);
+        const insertUserProfilenull = await userDao.insertUsernull(connection,userIdxRow.userIdx);
 
         connection.release();
         return response(baseResponse.SUCCESS);
@@ -141,12 +139,29 @@ exports.updateUserInfo = async function(userName, birth, userIdx) {
 // 유저 프로필 변경
 exports.updateUserProfile = async function(nickName,profileImg, taste, hateFood, interest, avgSpeed, preferArea, mbti, userIntroduce, userIdx) {
     try {
+
+        const userNameRows = await userProvider.nickNameCheck(nickName);
+        //console.log(userNameRows);
+        //console.log(userNameRows.length);
+        //.log(userNameRows[0].userIdx);
+        //console.log(userNameRows[0].nickName);
+
+        //유저닉네임 중복 처리 유저 닉네임이 바뀌는것이 자신의 아이디였다면 통과 아니라면 거부
+        if(userNameRows.length != 0) {
+            if (userNameRows[0].userIdx != userIdx) {
+                return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
+            }
+        }
+
+
+
+
         const connection = await pool.getConnection(async (conn) => conn);
 
         const params = [nickName,profileImg, taste, hateFood, interest,avgSpeed,
                         preferArea, mbti, userIntroduce, userIdx];
         const result = await userDao.updateUserProfile(connection, params);
-        return result;
+        return response(baseResponse.SUCCESS);
     } catch (err) {
         logger.error(`App - updateUserProfile Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);

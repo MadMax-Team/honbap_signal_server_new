@@ -6,10 +6,16 @@ module.exports = function (app) {
     // 시그널 생성 1 
     app.post("/signal/list", jwtMiddleware, signal.postSignal);
 
+    // 시그널 상태 조회
+    app.get("/signal/status", jwtMiddleware, signal.getSignalStatus);
+
     // 켜져 있는 시그널 확인 2
     app.get("/signal/list", jwtMiddleware, signal.getSignalList);
 
-    // 시그널 수정 3
+    // 시그널 정보 조회
+    app.get("/signal/info", jwtMiddleware, signal.getSignalInfo);
+
+    // 시그널 정보 수정 3
     app.patch("/signal/list", jwtMiddleware, signal.postSignalList);
 
     // 시그널 매칭 잡혔을 때 4
@@ -21,7 +27,7 @@ module.exports = function (app) {
     // 모든 시그널 삭제 가능 6
     app.delete("/signal/list", jwtMiddleware, signal.deleteSignal);
 
-    // 시그널 다시 ON 7
+    // 시그널 다시 ON 7 --
     app.patch("/signal/list/on", jwtMiddleware, signal.patchSigStatusOn);
 
     // 시그널 신청 목록 조회 8

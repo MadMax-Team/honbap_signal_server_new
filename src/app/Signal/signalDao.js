@@ -17,22 +17,33 @@ signal table -  userIdx : User.userIdx
 async function insertSignal(connection, params) {
   const query = `
                   INSERT INTO Signaling
-                  (userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, checkSigWrite)
-                  VALUES (?, ?, ?, ?);
+                  (userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, sigPromiseMenu, checkSigWrite)
+                  VALUES (?, ?, ?, ?, ?, ?, ?);
                   `;
   const [row] = await connection.query(query, params);
 
   return row;
 }
 
+// 시그널 상태 조회
+async function getSignalStatus(connection, userIdx) {
+  const query = `
+                    SELECT s.sigStatus, s.sigMatchStatus
+                    FROM Signaling AS s
+                    WHERE s.userIdx = userIdx; 
+  `
+  const [row] = await connection.query(query, userIdx);
+  return row;
+}
+
 // 켜져 있는 시그널 조회 *** 2 ***
 async function selectSignalList(connection, userIdx) {
   const query = `
-                    SELECT up1.userName as userNickName, up2.userName as matchingNickName,
+                    SELECT up1.nickName as userNickName, up2.nickName as matchingNickName,
                     s.sigPromiseTime, s.sigPromiseArea, s.checkSigWrite, s.sigStart, s.updateAt
                     FROM  Signaling AS s
-                        LEFT JOIN User AS up1 ON s.userIdx = up1.userIdx
-                        LEFT JOIN User AS up2 ON s.matchIdx = up2.userIdx
+                        LEFT JOIN UserProfile AS up1 ON s.userIdx = up1.userIdx
+                        LEFT JOIN UserProfile AS up2 ON s.matchIdx = up2.userIdx
                     WHERE s.userIdx = ? AND s.sigStatus = 1
                     ORDER BY s.signalIdx DESC;
                     `;
@@ -41,12 +52,24 @@ async function selectSignalList(connection, userIdx) {
   return row;
 }
 
-// 시그널 수정 *** 3 ***
+// 시그널 정보 조회 
+async function getSignalInfo(connection, params) {
+  const query = `
+                  SELECT s.sigPromiseTime, s.sigPromiseArea, s.sigPromiseMenu
+                  FROM Signaling AS s
+                  WHERE s.userIdx = ? AND s.sigStatus = 1 AND s.sigMatchStatus = 0;
+                `;
+  const [row] = await connection.query(query, params);
+
+  return row;             
+}
+
+// 시그널 정보 수정 *** 3 ***
 async function updateSignal(connection, params) {
   const query = `
                   UPDATE Signaling
-                  SET sigPromiseTime = ?, sigPromiseArea = ?, sigStart = ?, updateAt = default
-                  WHERE userIdx = ? AND sigStatus = 1;
+                  SET sigPromiseTime = ?, sigPromiseArea = ?, sigPromiseMenu = ?, sigStart = ?, updateAt = default
+                  WHERE userIdx = ? AND sigStatus = 1 AND sigMatchStatus = 0;
                   `;
   const [row] = await connection.query(query, params);
 
@@ -102,8 +125,8 @@ async function signalOn(connection, userIdx) {
 async function postSignalApply(connection, params) {
   const query = `
                     INSERT INTO SignalApply
-                    (signalIdx, applyedIdx, userIdx) 
-                    VALUES (?, ?, ?);
+                    (userIdx, applyedIdx) 
+                    VALUES (?, ?);
                     `;
   const [row] = await connection.query(query, params);
   return row;
@@ -114,9 +137,9 @@ async function postSignalApply(connection, params) {
 // applyIdx 와 applyTime 차이점이 있는건지 모르겟음.. 일단 applytTime 속성 없어서 정렬 제외하고 실행
 async function getSignalApply(connection, userIdx) {
   const query = `
-                  SELECT DISTINCT userName
+                  SELECT DISTINCT userIdx
                   FROM Signaling AS s, SignalApply AS sa, User AS up
-                  WHERE s.sigStatus = 1 AND sa.userIdx = ? AND 
+                  WHERE s.sigStatus = 1 AND s.sigMatchStatus = 0 AND sa.userIdx = ? AND 
                           sa.applyedIdx = up.userIdx;
                 `;
   const [row] = await connection.query(query, userIdx);
@@ -137,7 +160,7 @@ async function deleteSignalApply(connection, userIdx) {
 async function cancelSignalApply(connection, params) {
   const query = `
                     DELETE FROM SignalApply
-                    WHERE userIdx = ? AND applyedIdx = ?;
+                    WHERE userIdx = ? OR applyedIdx = ?;
                     `;
   const [row] = await connection.query(query, params);
   return row;
@@ -204,7 +227,9 @@ async function getInfoFromNickName(connection, nickName) {
 
 module.exports = {
   insertSignal, // 1
+  getSignalStatus,
   selectSignalList, // 2
+  getSignalInfo,
   updateSignal, // 3
   updateSigMatch, // 4
   signalOff, // 5

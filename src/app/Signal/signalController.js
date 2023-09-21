@@ -18,8 +18,11 @@ const regexEmail = require("regex-email");
  * [POST] /signal/list
  */
 exports.postSignal = async function (req, res) {
+
+  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu} = req.body;
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { sigPromiseTime, sigPromiseArea} = req.body;
+  
+  console.log(req.body);
   // 주석처리 한 부분은 나중에 다시 수정할 예정
 /*
   if (!sigPromiseArea)
@@ -31,14 +34,28 @@ exports.postSignal = async function (req, res) {
   if (arzoneListResult.length <= 0)
     return res.send(response(baseResponse.LOCATION_IS_NOT_IN_ARZONE));
 */
+
   const signalup = await signalService.createSignal(
     userIdxFromJWT,
     sigPromiseTime,
-    sigPromiseArea
+    sigPromiseArea,
+    sigPromiseMenu
   );
 
   return res.send(baseResponse.SUCCESS);
 };
+
+/**
+ * API No. 
+ * API Name : 시그널 상태조회 API
+ * [GET] /signal/status
+ */
+exports.getSignalStatus = async function (req, res){
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  const result = await signalProvider.getSignalStatus(userIdxFromJWT);
+  return res.send(response(baseResponse.SUCCESS, result))
+}
+
 
 /**
  * API No. 2
@@ -52,17 +69,29 @@ exports.getSignalList = async function (req, res) {
 };
 
 /**
+ * API No. 
+ * API Name : 시그널 정보 조회 API
+ * [GET] /signal/info
+ */
+exports.getSignalInfo = async function (req, res) {
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  const result = await signalProvider.getSignalInfo(userIdxFromJWT);
+  return res.send(response(baseResponse.SUCCESS, result));
+};
+
+/**
  * API No. 3
- * API Name : 시그널 수정 API
+ * API Name : 시그널 정보 수정 API
  * [PATCH] /signal/list
  */
 exports.postSignalList = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { sigPromiseTime, sigPromiseArea, sigStart } = req.body;
+  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, sigStart } = req.body;
 
   const modifySigList = await signalService.modifySigList(
     sigPromiseTime,
     sigPromiseArea,
+    sigPromiseMenu,
     sigStart,
     userIdxFromJWT
   );
@@ -79,11 +108,11 @@ exports.postSigMatch = async function (req, res) {
   const { matchIdx } = req.body;
 
   const matching = await signalService.matching(matchIdx, userIdxFromJWT);
-  
+
   /*console.log("here1")
   const createChat = await chatService.createChatRoom(userIdxFromJWT, matchIdx);
   console.log("here2")*/
-  
+
   return res.send(baseResponse.SUCCESS);
 };
 
@@ -143,9 +172,9 @@ exports.getSignalApply = async function (req, res) {
  */
 exports.postSignalApply = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { signalIdx, applyedIdx } = req.body;
-
-  const apply = await signalService.signalApply(signalIdx, applyedIdx, userIdxFromJWT);
+  const { userIdx, applyedIdx } = req.body;
+  console.log(req.body)
+  const apply = await signalService.signalApply(userIdx, applyedIdx, userIdxFromJWT);
 
   return res.send(baseResponse.SUCCESS);
 };
@@ -223,7 +252,7 @@ exports.getMySignal = async function (req, res) {
   if (!resultNickName.length) {
     return res.send(errResponse(baseResponse.USER_IS_NOT_EXIST));
   }
-   
+
   const resultInfo = await signalProvider.getInfoFromNickName(nickName);
 
   return res.send(response(baseResponse.SUCCESS, resultInfo));

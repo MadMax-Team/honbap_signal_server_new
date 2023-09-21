@@ -14,18 +14,18 @@ const { connect } = require("http2");
 
 
 // 시그널 등록
-exports.createSignal = async function (userIdx, sigPromiseTime, sigPromiseArea) {
+exports.createSignal = async function (userIdx, sigPromiseTime, sigPromiseArea, sigPromiseMenu) {
     try {
         let checkSigWrite = 1;
 
-        if(sigPromiseTime == "" && sigPromiseArea == "") {
+        if(sigPromiseTime == null && sigPromiseArea == null && sigPromiseMenu == null) {
             checkSigWrite = 0;
         }
 
         let sigStatus = 1;
         let sigMatchStatus = 0;
 
-        const signalRows = [userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, checkSigWrite];
+        const signalRows = [userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, sigPromiseMenu, checkSigWrite];
         const connection = await pool.getConnection(async (conn) => conn);
         
         const createSignalResult = await signalDao.insertSignal(connection, signalRows);
@@ -40,10 +40,10 @@ exports.createSignal = async function (userIdx, sigPromiseTime, sigPromiseArea) 
 }
 
 // 시그널 정보 수정
-exports.modifySigList = async function (sigPromiseTime ,sigPromiseArea, sigStart, userIdx) {
+exports.modifySigList = async function (sigPromiseTime ,sigPromiseArea, sigPromiseMenu, sigStart, userIdx) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
-        const params = [sigPromiseTime, sigPromiseArea, sigStart, userIdx];
+        const params = [sigPromiseTime, sigPromiseArea, sigPromiseMenu, sigStart, userIdx];
         const result = await signalDao.updateSignal(connection, params);
         connection.release();
 
@@ -123,9 +123,9 @@ exports.signalOn = async function (userIdx) {
 }
 
 // 시그널 리스트 신청
-exports.signalApply = async function (signalIdx, applyedIdx, userIdx) {
+exports.signalApply = async function (userIdx, applyedIdx) {
     try {
-        const params = [signalIdx, applyedIdx, userIdx];
+        const params = [userIdx, applyedIdx];
         const connection = await pool.getConnection(async (conn) => conn);
         const result = await signalDao.postSignalApply(connection, params);
         connection.release;
