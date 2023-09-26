@@ -3,7 +3,7 @@ const findProvider = require("../../app/SignalFind/findProvider");
 const findService = require("../../app/SignalFind/findService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
-const logger = require("../../../config/winston");
+const { logger } = require("../../../config/winston");
 
 
 /**
@@ -12,9 +12,9 @@ const logger = require("../../../config/winston");
  * [POST] /app/signalFind/:myLocation
  */
 exports.postMyLocation = async function (req, res) {
-
     var latitude = req.body.latitude;
     var longitude = req.body.longitude;
+    const userIdx = req.verifiedToken.userIdx;
 
     // 빈 값 체크
     if(!latitude)
@@ -22,18 +22,18 @@ exports.postMyLocation = async function (req, res) {
 
     if(!longitude)
       return res.send(response(baseResponse.SIGNALFIND_LONGITUDE_EMPTY));
+    
+    if(!userIdx)
+      return res.send(response(baseResponse.SIGNALFIND_USERIDX_EMPTY)); 
 
-    const locationResponse = await findService.createUserLocation(
-      latitude,
-      longitude
-    );
+    const locationResponse = await findService.createUserLocation(userIdx, latitude, longitude);
 
-    return res.send(response(baseResponse.SUCCESS, locationResponse));
+    return res.send(response(locationResponse));
   }
 /**
  * API No. 2
  * API Name : 내 위치 업데이트 API
- * [GET] /app/signalFind?myLocation={myLocation}&useridx={useridx}''
+ * [POST] /signalFind'
  */
 
   exports.patchMyLocation = async function (req, res) {
@@ -70,5 +70,7 @@ exports.postMyLocation = async function (req, res) {
 
     // const params = [userIdx];
     const signalListResponse = await findProvider.getSignalList(userIdx);
-    return res.send(signalListResponse);
+    logger.info(signalListResponse);
+
+    return res.send(response(baseResponse.SUCCESS, signalListResponse));
   }

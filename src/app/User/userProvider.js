@@ -27,7 +27,6 @@ exports.emailCheck = async function (email) {
     const emailCheckResult = await userDao.existUserEmail(connection, email);
     connection.release();
 
-
     return emailCheckResult;
   } catch (err) {
     logger.error(`emailCheck Provider error\n: ${err.message}`);
