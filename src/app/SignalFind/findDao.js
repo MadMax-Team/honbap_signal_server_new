@@ -1,3 +1,14 @@
+const baseResponse = require("../../../config/baseResponseStatus");
+
+async function insertUserLocation(connection, params) {
+  const query = `
+                  INSERT INTO UserLocation(userIdx)
+                  VALUES(?);
+                `;
+  const row = await connection.execute(query, params);
+  return baseResponse.SUCCESS;
+}
+
 async function updateLocation(connection, params) {
   const query = `
                 UPDATE UserLocation
@@ -34,7 +45,8 @@ async function getSignalOnUser(connection, params){
 
 
 module.exports = {
-  updateLocation, // 1
-  getLocation, // 2
-  getSignalOnUser // 3
+  insertUserLocation,
+  updateLocation, 
+  getLocation, 
+  getSignalOnUser
 };

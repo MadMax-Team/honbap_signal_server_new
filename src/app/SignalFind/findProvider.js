@@ -15,34 +15,38 @@ exports.getSignalList = async function (userIdx)
 
     const signalOnUserIdxList = await findDao.getSignalOnUser(connection, params);
 
-    // 접속 유저 최신 위치 정보 불러오기
     const loginUserLocation = await findDao.getLocation(connection, userIdx);
-
-    logger.info("--------------------------------");
-
-    let nearSignalOnUserList = [];
+    
+    let nearSignalOnUserList = {};
 
     for(var i=0; i < signalOnUserIdxList.length; i++)
     {
       logger.info("--------------------------------");
       let signalOnUserLocation  = await findDao.getLocation(connection, signalOnUserIdxList[i].userIdx); 
+
+      logger.info(signalOnUserIdxList[i].userIdx);
+      logger.info(signalOnUserLocation[0].latitude);
+      logger.info(signalOnUserLocation[0].longitude);
       
       let loginUserAndSignalOnUserDistance = haversine(loginUserLocation[0], signalOnUserLocation[0]);
 
-      if(loginUserAndSignalOnUserDistance > 0 && loginUserAndSignalOnUserDistance < 10 )
+      if(loginUserAndSignalOnUserDistance < 10 )
       {
         if(signalOnUserIdxList[i].userIdx != userIdx)
         {
-          nearSignalOnUserList.push(signalOnUserIdxList[i]);
+          nearSignalOnUserList.userIdx = signalOnUserIdxList[i].userIdx;
+          nearSignalOnUserList.distance = loginUserAndSignalOnUserDistance;
         }
       }
-      else if(distance > 10)
+      else if(loginUserAndSignalOnUserDistance > 10)
       {
         logger.info("10km 거리에서 벗어난 시그널 입니다.");
         logger.info("--------------------------------");
-      }
+      }      
     }
+    logger.info(nearSignalOnUserList);
     connection.release();
+    
     return nearSignalOnUserList;
   } catch (err) {
     logger.error(`findProvider error\n: ${err.message}`);
