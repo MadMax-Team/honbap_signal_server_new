@@ -198,12 +198,12 @@ exports.login = async function (email, password){
 
         const userIdxRow = await userProvider.getUserIdx(email);
 
-        console.log("userIdx in jwt: ", userIdxRow[0].userIdx)
+        console.log("userIdx in jwt: ", userIdxRow.userIdx)
 
 
         let jwtToken = await jwt.sign(
             {
-                userIdx : userIdxRow[0].userIdx
+                userIdx : userIdxRow.userIdx
             },
             jwtsecret,
             {
@@ -211,7 +211,7 @@ exports.login = async function (email, password){
                 subject: "userInfo",
             }
         );
-        return response(baseResponse.SUCCESS, {'userIdx': userIdxRow[0].userIdx , 'jwt': jwtToken});
+        return response(baseResponse.SUCCESS, {'userIdx': userIdxRow.userIdx , 'jwt': jwtToken});
 
         // return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.LOGIN_SUCCESS,
         //     {
@@ -230,12 +230,12 @@ exports.kakaoLogin = async function (email){
     try {
         const userIdxRow = await userProvider.getUserIdx(email);
 
-        console.log("userIdx in jwt: ", userIdxRow[0].userIdx);
+        console.log("userIdx in jwt: ", userIdxRow.userIdx);
 
 
         let jwtToken = await jwt.sign(
             {
-                userIdx : userIdxRow[0].userIdx
+                userIdx : userIdxRow.userIdx
             },
             jwtsecret,
             {
@@ -243,7 +243,7 @@ exports.kakaoLogin = async function (email){
                 subject: "userInfo",
             }
         );
-        return response(baseResponse.SUCCESS, {'userIdx': userIdxRow[0].userIdx , 'jwt': jwtToken});
+        return response(baseResponse.SUCCESS, {'userIdx': userIdxRow.userIdx , 'jwt': jwtToken});
 
         // return res.status(statusCode.OK).send(util.success(statusCode.OK, responseMsg.LOGIN_SUCCESS,
         //     {
