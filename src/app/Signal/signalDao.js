@@ -92,7 +92,6 @@ async function updateSigMatch(connection, params) {
 async function signalOff(connection, userIdx) {
   const query = `
                   DELETE FROM Signaling
-                  SET sigStatus = 0
                   WHERE sigStatus = 1 AND userIdx = ? AND sigMatchStatus = 0;
                   `;
 
@@ -134,14 +133,11 @@ async function postSignalApply(connection, params) {
 }
 
 // 시그널 신청 리스트 조회 *** 9 ***
-// 닉네임이라는 거 없어서 테스트 위해서 userName 으로 변경후 실행
-// applyIdx 와 applyTime 차이점이 있는건지 모르겟음.. 일단 applytTime 속성 없어서 정렬 제외하고 실행
 async function getSignalApply(connection, userIdx) {
   const query = `
-                  SELECT DISTINCT userIdx
-                  FROM Signaling AS s, SignalApply AS sa, User AS up
-                  WHERE s.sigStatus = 1 AND s.sigMatchStatus = 0 AND sa.userIdx = ? AND 
-                          sa.applyedIdx = up.userIdx;
+      SELECT DISTINCT applyedIdx
+      FROM Signaling AS s, SignalApply AS sa
+      WHERE s.sigStatus = 1 AND s.sigMatchStatus = 0 AND sa.userIdx = ?;
                 `;
   const [row] = await connection.query(query, userIdx);
   return row;
