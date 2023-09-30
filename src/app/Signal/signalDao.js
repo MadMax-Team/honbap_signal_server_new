@@ -193,7 +193,6 @@ module.exports = {
   getSignalApplyed,
   deleteSignalApply, // 10
   cancelSignalApply, // 11
-  endSignals, // 12
   mySignal, // 13
   arzoneList, // 14
   modifySignalContents, //15
