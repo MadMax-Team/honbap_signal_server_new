@@ -25,7 +25,7 @@ async function insertSignal(connection, params) {
   return row;
 }
 
-// 시그널 상태 조회
+// 시그널 상태 조회 *** 2 ***
 async function getSignalStatus(connection, userIdx) {
   const query = `
                     SELECT s.sigStatus, s.sigMatchStatus
@@ -36,23 +36,7 @@ async function getSignalStatus(connection, userIdx) {
   return row;
 }
 
-// 켜져 있는 시그널 조회 *** 2 ***
-async function selectSignalList(connection, userIdx) {
-  const query = `
-                    SELECT up1.nickName as userNickName, up2.nickName as matchingNickName,
-                    s.sigPromiseTime, s.sigPromiseArea, s.checkSigWrite, s.sigStart, s.updateAt
-                    FROM  Signaling AS s
-                        LEFT JOIN UserProfile AS up1 ON s.userIdx = up1.userIdx
-                        LEFT JOIN UserProfile AS up2 ON s.matchIdx = up2.userIdx
-                    WHERE s.userIdx = ? AND s.sigStatus = 1
-                    ORDER BY s.signalIdx DESC;
-                    `;
-
-  const [row] = await connection.query(query, userIdx);
-  return row;
-}
-
-// 시그널 정보 조회 
+// 시그널 정보 조회 *** 3 ***
 async function getSignalInfo(connection, params) {
   const query = `
                   SELECT s.sigPromiseTime, s.sigPromiseArea, s.sigPromiseMenu
@@ -64,24 +48,12 @@ async function getSignalInfo(connection, params) {
   return row;             
 }
 
-// 시그널 정보 수정 *** 3 ***
+// 시그널 정보 수정 *** 4 ***
 async function updateSignal(connection, params) {
   const query = `
                   UPDATE Signaling
                   SET sigPromiseTime = ?, sigPromiseArea = ?, sigPromiseMenu = ?, sigStart = ?, updateAt = default
                   WHERE userIdx = ? AND sigStatus = 1 AND sigMatchStatus = 0;
-                  `;
-  const [row] = await connection.query(query, params);
-
-  return row;
-}
-
-// 시그널 매칭 상대 업데이트 *** 4 ***
-async function updateSigMatch(connection, params) {
-  const query =   `
-                  UPDATE Signaling
-                  SET matchIdx = ?, sigStatus = 0, sigMatchStatus = 1
-                  WHERE userIdx = ? AND sigStatus = 1;
                   `;
   const [row] = await connection.query(query, params);
 
@@ -99,29 +71,8 @@ async function signalOff(connection, userIdx) {
   return row;
 }
 
-// 시그널 리스트에서 삭제 *** 6 ***
-async function deleteSignal(connection, params) {
-  const query = `
-                  DELETE FROM Signaling
-                  WHERE signalIdx = ? AND userIdx = ?;
-                  `;
-  const [row] = await connection.query(query, params);
-  return row;
-}
 
-// 시그널 ON *** 7 ***
-async function signalOn(connection, userIdx) {
-  const query = `
-                  UPDATE Signaling
-                  SET sigStatus = 1
-                  WHERE sigStatus = 0 AND userIdx = ?;
-                  `;
-
-  const [row] = await connection.query(query, userIdx);
-  return row;
-}
-
-// 시그널 리스트 신청 *** 8 ***
+// 시그널 리스트 신청 *** 6 ***
 async function postSignalApply(connection, params) {
   const query = `
                     INSERT INTO SignalApply
@@ -132,7 +83,7 @@ async function postSignalApply(connection, params) {
   return row;
 }
 
-// 시그널 신청 리스트 조회 *** 9 ***
+// 시그널 신청 리스트 조회 *** 7 ***
 async function getSignalApply(connection, userIdx) {
   const query = `
       SELECT DISTINCT applyedIdx
@@ -143,7 +94,7 @@ async function getSignalApply(connection, userIdx) {
   return row;
 }
 
-// 시그널 신청 리스트 조회 *** 9 ***
+// 시그널 신청 리스트 조회 *** 8 ***
 async function getSignalApplyed(connection, userIdx) {
   const query = `
       SELECT DISTINCT applyedIdx
@@ -164,24 +115,11 @@ async function deleteSignalApply(connection, userIdx) {
   return row;
 }
 
-// 시그널 신청 취소 *** 11 ***
+// 시그널 신청 취소 *** 9 ***
 async function cancelSignalApply(connection, params) {
   const query = `
                     DELETE FROM SignalApply
                     WHERE userIdx = ? OR applyedIdx = ?;
-                    `;
-  const [row] = await connection.query(query, params);
-  return row;
-}
-
-// 이전 시그널들 조회 *** 12 ***
-async function endSignals(connection, params) {
-  const query = `
-                    SELECT up1.nickName, up2.nickName, s.sigPromiseArea, s.sigPromiseTime
-                    FROM    Signaling AS s
-                            right join User AS up1 ON s.userIdx = up1.userIdx
-                            right join User AS up2 ON s.matchIdx = up2.userIdx
-                    WHERE (s.userIdx = ? OR s.matchIdx = ?) AND s.sigStatus = 0;
                     `;
   const [row] = await connection.query(query, params);
   return row;
@@ -231,20 +169,28 @@ async function getInfoFromNickName(connection, nickName) {
   return row;
 }
 
+// 시그널 매칭 상대 업데이트 *** 4 ***
+async function updateSigMatch(connection, params) {
+  const query =   `
+                  UPDATE Signaling
+                  SET matchIdx = ?, sigStatus = 0, sigMatchStatus = 1
+                  WHERE userIdx = ? AND sigStatus = 1;
+                  `;
+  const [row] = await connection.query(query, params);
 
+  return row;
+}
 
 module.exports = {
   insertSignal, // 1
-  getSignalStatus,
-  selectSignalList, // 2
-  getSignalInfo,
-  updateSignal, // 3
-  updateSigMatch, // 4
+  getSignalStatus, // 2
+  getSignalInfo, //3
+  updateSignal, // 4
+  updateSigMatch, //
   signalOff, // 5
-  deleteSignal, // 6
-  signalOn, // 7
   postSignalApply, // 8
   getSignalApply, // 9
+  getSignalApplyed,
   deleteSignalApply, // 10
   cancelSignalApply, // 11
   endSignals, // 12

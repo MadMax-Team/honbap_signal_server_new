@@ -46,7 +46,7 @@ exports.postSignal = async function (req, res) {
 };
 
 /**
- * API No. 
+ * API No. 2
  * API Name : 시그널 상태조회 API
  * [GET] /signal/status
  */
@@ -56,20 +56,8 @@ exports.getSignalStatus = async function (req, res){
   return res.send(response(baseResponse.SUCCESS, result))
 }
 
-
 /**
- * API No. 2
- * API Name : 켜져 있는 시그널 확인 API
- * [GET] /signal/list
- */
-exports.getSignalList = async function (req, res) {
-  const userIdxFromJWT = req.verifiedToken.userIdx;
-  const result = await signalProvider.getSignalList(userIdxFromJWT);
-  return res.send(response(baseResponse.SUCCESS, result));
-};
-
-/**
- * API No. 
+ * API No. 3
  * API Name : 시그널 정보 조회 API
  * [GET] /signal/info
  */
@@ -80,11 +68,11 @@ exports.getSignalInfo = async function (req, res) {
 };
 
 /**
- * API No. 3
+ * API No. 4
  * API Name : 시그널 정보 수정 API
  * [PATCH] /signal/list
  */
-exports.postSignalList = async function (req, res) {
+exports.patchSignalList = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, sigStart } = req.body;
 
@@ -95,24 +83,6 @@ exports.postSignalList = async function (req, res) {
     sigStart,
     userIdxFromJWT
   );
-  return res.send(baseResponse.SUCCESS);
-};
-
-/**
- * API No. 4
- * API Name : 시그널 매칭 잡혔을 때 API
- * [PATCH] /signal/list/matching
- */
-exports.postSigMatch = async function (req, res) {
-  const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { matchIdx } = req.body;
-
-  const matching = await signalService.matching(matchIdx, userIdxFromJWT);
-
-  /*console.log("here1")
-  const createChat = await chatService.createChatRoom(userIdxFromJWT, matchIdx);
-  console.log("here2")*/
-
   return res.send(baseResponse.SUCCESS);
 };
 
@@ -130,31 +100,20 @@ exports.SigStatusOff = async function (req, res) {
 
 /**
  * API No. 6
- * API Name : 시그널 삭제 API
- * [DELETE] /signal/list
+ * API Name : 시그널 신청 API
+ * [POST] /signal/applylist
  */
-exports.deleteSignal = async function (req, res) {
+exports.postSignalApply = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { signalIdx } = req.body;
+  const { userIdx, applyedIdx } = req.body;
+  console.log(req.body)
+  const apply = await signalService.signalApply(userIdx, applyedIdx, userIdxFromJWT);
 
-  const deleteSignal = await signalService.deleteSignalList(signalIdx, userIdxFromJWT);
   return res.send(baseResponse.SUCCESS);
 };
 
 /**
  * API No. 7
- * API Name : 시그널 다시 ON API
- * [PATCH] /signal/list/on
- */
-exports.patchSigStatusOn = async function (req, res) {
-  const userIdxFromJWT = req.verifiedToken.userIdx;
-
-  const signalOn = await signalService.signalOn(userIdxFromJWT);
-  return res.send(baseResponse.SUCCESS);
-};
-
-/**
- * API No. 8
  * API Name : 시그널 신청 목록 조회 API (내가 보낸)
  * [GET] /signal/applylist
  */
@@ -170,7 +129,7 @@ exports.getSignalApply = async function (req, res) {
  * API Name : 시그널 신청 목록 조회 API (내가 받은)
  * [GET] /signal/applyedlist
  */
-exports.getSignalApply = async function (req, res) {
+exports.getSignalApplyed = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
 
   const result = await signalProvider.getSignalApplyed(userIdxFromJWT);
@@ -179,20 +138,6 @@ exports.getSignalApply = async function (req, res) {
 
 /**
  * API No. 9
- * API Name : 시그널 신청 API
- * [POST] /signal/applylist
- */
-exports.postSignalApply = async function (req, res) {
-  const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { userIdx, applyedIdx } = req.body;
-  console.log(req.body)
-  const apply = await signalService.signalApply(userIdx, applyedIdx, userIdxFromJWT);
-
-  return res.send(baseResponse.SUCCESS);
-};
-
-/**
- * API No. 10
  * API Name : 시그널 신청 취소 API
  * [DELETE] /signal/applylist
  */
@@ -204,36 +149,6 @@ exports.cancelSignalApply = async function (req, res) {
     applyedIdx,
     userIdxFromJWT
   );
-  return res.send(baseResponse.SUCCESS);
-};
-
-/**
- * API No. 11
- * API Name : 이전 시그널 조회 API
- * [GET] /signal/listed
- */
-exports.getEndSignals = async function (req, res) {
-  const userIdxFromJWT = req.verifiedToken.userIdx;
-  // const userIdx = req.params.userIdx;
-  // const userIdx2 = req.params.userIdx;
-
-  const endSignals = await signalProvider.endSignals(userIdxFromJWT, userIdxFromJWT);  //userIdx1, 2가 어차피 같아서 이렇게 처리합니다.
-  return res.send(response(baseResponse.SUCCESS, endSignals));
-};
-
-/**
- * API No. 12
- * API Name : 주황색 유저를 위한 signalPromise Area, Time 수정
- * [PATCH] /signal/list/orange
- */
-
-exports.patchSignalContents = async function (req, res) {
-  const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { sigPromiseTime, sigPromiseArea} = req.body;
-
-  const signalContents = await signalService.signalContents(userIdxFromJWT
-    ,sigPromiseTime,
-    sigPromiseArea);
   return res.send(baseResponse.SUCCESS);
 };
 
@@ -268,4 +183,22 @@ exports.getMySignal = async function (req, res) {
   const resultInfo = await signalProvider.getInfoFromNickName(nickName);
 
   return res.send(response(baseResponse.SUCCESS, resultInfo));
+};
+
+/**
+ * API No. 4
+ * API Name : 시그널 매칭 잡혔을 때 API
+ * [PATCH] /signal/list/matching
+ */
+exports.postSigMatch = async function (req, res) {
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  const { matchIdx } = req.body;
+
+  const matching = await signalService.matching(matchIdx, userIdxFromJWT);
+
+  /*console.log("here1")
+  const createChat = await chatService.createChatRoom(userIdxFromJWT, matchIdx);
+  console.log("here2")*/
+
+  return res.send(baseResponse.SUCCESS);
 };

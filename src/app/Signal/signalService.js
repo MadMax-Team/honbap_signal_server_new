@@ -13,7 +13,7 @@ const jwt = require("jsonwebtoken");
 const { connect } = require("http2");
 
 
-// 시그널 등록
+// 시그널 등록 1
 exports.createSignal = async function (userIdx, sigPromiseTime, sigPromiseArea, sigPromiseMenu) {
     try {
         let checkSigWrite = 1;
@@ -39,7 +39,7 @@ exports.createSignal = async function (userIdx, sigPromiseTime, sigPromiseArea, 
     }
 }
 
-// 시그널 정보 수정
+// 시그널 정보 수정 4
 exports.modifySigList = async function (sigPromiseTime ,sigPromiseArea, sigPromiseMenu, sigStart, userIdx) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
@@ -56,30 +56,7 @@ exports.modifySigList = async function (sigPromiseTime ,sigPromiseArea, sigPromi
     }
 }
 
-// 매칭 상대 업데이트
-exports.matching = async function (matchIdx, userIdx) {
-    const connection = await pool.getConnection(async (conn) => conn);
-    try {
-        await connection.beginTransaction();
-        const params = [matchIdx, userIdx];
-        const user = userIdx;
-
-        const result = await signalDao.updateSigMatch(connection, params);
-        //const result2 = await signalDao.deleteSignalApply(connection, user);
-
-        await connection.commit();
-
-        connection.release();
-        return result;
-    } catch (err) {
-        await connection.rollback();
-        connection.release();
-        logger.error(`App - matching Service error\n: ${err.message}`);
-        return errResponse(baseResponse.DB_ERROR);
-    }
-}
-
-// 시그널 off
+// 시그널 off 5
 exports.signalOff = async function (userIdx) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
@@ -93,36 +70,7 @@ exports.signalOff = async function (userIdx) {
     }
 }
 
-// 시그널 삭제
-exports.deleteSignalList = async function (signalIdx, userIdx) {
-    try {
-        const connection = await pool.getConnection(async (conn) => conn);
-        const params = [signalIdx, userIdx];
-        const result = await signalDao.deleteSignal(connection, params);
-        connection.release();
-
-        return result;
-    } catch(err) {
-        logger.error(`App - deleteSignalList Service error\n: ${err.message}`);
-        return errResponse(baseResponse.DB_ERROR);
-    }
-}
-
-// 시그널 on
-exports.signalOn = async function (userIdx) {
-    try {
-        const connection = await pool.getConnection(async (conn) => conn);
-        const result = await signalDao.signalOn(connection, userIdx);
-
-        connection.release;
-        return result;
-    } catch (err) {
-        logger.error(`App - signalOn Service error\n: ${err.message}`);
-        return errResponse(baseResponse.DB_ERROR);
-    }
-}
-
-// 시그널 리스트 신청
+// 시그널 리스트 신청 6
 exports.signalApply = async function (userIdx, applyedIdx) {
     try {
         const params = [userIdx, applyedIdx];
@@ -136,7 +84,7 @@ exports.signalApply = async function (userIdx, applyedIdx) {
     }
 }
 
-// 시그널 신청 취소
+// 시그널 신청 취소 9
 exports.cancelSignalApply = async function (applyedIdx, userIdx) {
     try {
         const params = [userIdx,applyedIdx];
@@ -160,6 +108,30 @@ exports.signalContents = async function (userIdx, sigPromiseTime, sigPromiseArea
         return result;
     } catch (err) {
         logger.error(`App - modifySignalContents Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}
+
+
+// 매칭 상대 업데이트
+exports.matching = async function (matchIdx, userIdx) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    try {
+        await connection.beginTransaction();
+        const params = [matchIdx, userIdx];
+        const user = userIdx;
+
+        const result = await signalDao.updateSigMatch(connection, params);
+        //const result2 = await signalDao.deleteSignalApply(connection, user);
+
+        await connection.commit();
+
+        connection.release();
+        return result;
+    } catch (err) {
+        await connection.rollback();
+        connection.release();
+        logger.error(`App - matching Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 }
