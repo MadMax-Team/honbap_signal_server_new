@@ -73,7 +73,7 @@ async function selectUserIdx(connection, email) {
                   WHERE email = ?;
                   `;
 
-    const row = await connection.query(query, email);
+    const [row]= await connection.query(query, email);
 
     return row;
 }
@@ -128,14 +128,13 @@ async function createUserManner(connection, userIdx) {
 }
 
 // 닉네임 체크 *** 9 ***
-async function existUserNickname(connection, userName) {
+async function existUserNickname(connection, nickName) {
     const query = `
-                  SELECT userName
-                  FROM User
-                  WHERE userName = ?;
+                  SELECT nickName,userIdx
+                  FROM UserProfile
+                  WHERE nickName = ?;
                   `;
-    console.log(userName)
-    const [row] = await connection.query(query, userName);
+    const [row] = await connection.query(query, nickName);
 
     return row;
 }
@@ -242,6 +241,18 @@ async function insertUsernull(connection, userIdx) {
     return row;
 }
 
+
+//회원가입할때 프로필 널값 넣기
+async function insertUsernull(connection,idx){
+    const query = `
+                INSERT INTO UserProfile
+                (userIdx)
+                VALUES (?);
+                `;
+    const [row] = await connection.query(query,idx);
+
+    return row;
+}
 
 
 module.exports = {

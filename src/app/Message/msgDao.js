@@ -14,9 +14,13 @@ async function createMsgRoom(connection, params) {
 // 쪽지 방 확인 *** 2 ***
 async function getMsgRoom(connection, params) {
     const query =   `
-                    SELECT roomId
-                    FROM MessageRoom
-                    WHERE userIdx = ? OR matchIdx = ?;
+                    SELECT  MM.roomId , MM.msg
+                    FROM Message AS MM 
+                        LEFT JOIN MessageRoom AS m ON m.roomId = MM.roomId  AND (userIdx = ? OR matchIdx=?)
+                    WHERE (MM.roomId,MM.sendAt) in (select roomId,MAX(sendAt) from Message group by roomId)
+                    ORDER BY MM.sendAt DESC 
+                    
+    
                     `
     const [row] = await connection.query(query, params);
     return row;
