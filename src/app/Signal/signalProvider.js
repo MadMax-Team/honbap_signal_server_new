@@ -5,7 +5,7 @@ const baseResponse = require("../../../config/baseResponseStatus");
 
 const signalDao = require("./signalDao");
 
-// 시그널 상태 조회
+// 시그널 상태 조회 2
 exports.getSignalStatus = async function (userIdx) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
@@ -27,7 +27,7 @@ exports.getSignalStatus = async function (userIdx) {
   }
 }
 
-// 시그널 정보 조회
+// 시그널 정보 조회 3
 exports.getSignalInfo = async function (userIdx) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
@@ -45,25 +45,7 @@ exports.getSignalInfo = async function (userIdx) {
   }  
 }
 
-// 시그널 조회
-exports.getSignalList = async function (userIdx) {
-  try {
-    const connection = await pool.getConnection(async (conn) => conn);
-
-    const userIdxCheckResult = await signalDao.selectSignalList(
-      connection,
-      userIdx
-    );
-    connection.release();
-
-    return userIdxCheckResult[0];
-  } catch (err) {
-    logger.error(`getSignalList Provider error\n: ${err.message}`);
-    return errResponse(baseResponse.DB_ERROR);
-  }
-};
-
-// 시그널 신청 리스트 조회
+// 시그널 신청 리스트 조회 (내가 보낸) 7
 exports.getSignalApply = async function (userIdx) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
@@ -78,22 +60,22 @@ exports.getSignalApply = async function (userIdx) {
   }
 };
 
-// 이전 시그널들 조회
-exports.endSignals = async function (userIdx, userIdx2) {
+// 시그널 신청 리스트 조회 (내가 받은) 8
+exports.getSignalApplyed = async function (userIdx) {
   try {
-    const params = [userIdx, userIdx2];
     const connection = await pool.getConnection(async (conn) => conn);
 
-    const endsResult = await signalDao.endSignals(connection, params);
+    const applyResult = await signalDao.getSignalApplyed(connection, userIdx);
     connection.release();
 
-    return endsResult;
+    return applyResult;
   } catch (err) {
-    logger.error(`endSignals Provider error\n: ${err.message}`);
+    logger.error(`getSignalApply Provider error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   }
 };
 
+// 로그인한 유저들의 signalIdx
 exports.mySignal = async function (userIdx) {
   try {
     const params = [userIdx];
