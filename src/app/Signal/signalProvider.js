@@ -16,6 +16,10 @@ exports.getSignalStatus = async function (userIdx) {
     );
     connection.release();
 
+    //시그널이 없는 경우 sigStatus == 0, sigMatchStatus == 0으로 출력
+    if (userIdxCheckResult.length === 0) {
+      userIdxCheckResult.push({ sigStatus: 0, sigMatchStatus: 0 });
+    }
     return userIdxCheckResult[0];
   } catch (err) {
     logger.error(`getSignalList Provider error\n: ${err.message}`);
