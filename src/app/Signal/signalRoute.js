@@ -30,8 +30,11 @@ module.exports = function (app) {
     // 시그널 다시 ON 7 --
     app.patch("/signal/list/on", jwtMiddleware, signal.patchSigStatusOn);
 
-    // 시그널 신청 목록 조회 8
+    // 시그널 신청 목록 조회 (내가 보낸)
     app.get("/signal/applylist", jwtMiddleware, signal.getSignalApply);
+
+    // 시그널 신청 목록 조회 (내가 받은)
+    app.get("/signal/applyedlist", jwtMiddleware, signal.getSignalApplyed);
 
     // 시그널 신청 9
     app.post("/signal/applylist", jwtMiddleware, signal.postSignalApply);

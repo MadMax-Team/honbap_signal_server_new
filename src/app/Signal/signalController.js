@@ -155,13 +155,25 @@ exports.patchSigStatusOn = async function (req, res) {
 
 /**
  * API No. 8
- * API Name : 시그널 신청 목록 조회 API
+ * API Name : 시그널 신청 목록 조회 API (내가 보낸)
  * [GET] /signal/applylist
  */
 exports.getSignalApply = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
 
   const result = await signalProvider.getSignalApply(userIdxFromJWT);
+  return res.send(response(baseResponse.SUCCESS, result));
+};
+
+/**
+ * API No. 8
+ * API Name : 시그널 신청 목록 조회 API (내가 받은)
+ * [GET] /signal/applyedlist
+ */
+exports.getSignalApply = async function (req, res) {
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+
+  const result = await signalProvider.getSignalApplyed(userIdxFromJWT);
   return res.send(response(baseResponse.SUCCESS, result));
 };
 

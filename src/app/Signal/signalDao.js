@@ -143,6 +143,17 @@ async function getSignalApply(connection, userIdx) {
   return row;
 }
 
+// 시그널 신청 리스트 조회 *** 9 ***
+async function getSignalApplyed(connection, userIdx) {
+  const query = `
+      SELECT DISTINCT applyedIdx
+      FROM Signaling AS s, SignalApply AS sa
+      WHERE s.sigStatus = 1 AND s.sigMatchStatus = 0 AND sa.applyedIdx = ?;
+                `;
+  const [row] = await connection.query(query, userIdx);
+  return row;
+}
+
 // 시그널 신청 리스트 삭제 (자동) *** 10 ***
 async function deleteSignalApply(connection, userIdx) {
   const query = `
