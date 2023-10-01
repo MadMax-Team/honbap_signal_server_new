@@ -14,7 +14,7 @@ const { connect } = require("http2");
 
 
 // 시그널 등록 1
-exports.createSignal = async function (userIdx, sigPromiseTime, sigPromiseArea, sigPromiseMenu) {
+exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromiseMenu, userIdx) {
     try {
         let checkSigWrite = 1;
 
@@ -31,7 +31,7 @@ exports.createSignal = async function (userIdx, sigPromiseTime, sigPromiseArea, 
         const createSignalResult = await signalDao.insertSignal(connection, signalRows);
 
         connection.release();
-        return response(baseResponse.SUCCESS);
+        return createSignalResult;
     }
     catch (err) {
         logger.error(`App - createSignal Service error\n: ${err.message}`);
@@ -121,9 +121,13 @@ exports.matching = async function (matchIdx, userIdx) {
         const params = [matchIdx, userIdx];
         const user = userIdx;
 
-        const result = await signalDao.updateSigMatch(connection, params);
+        //시그널 수락자, 신청자 둘다 상태 변경해줘야함
+        //signalApply table에서 전부 삭제 ()
         //const result2 = await signalDao.deleteSignalApply(connection, user);
 
+        //signal상태 sigStatus = 0, sigMatchStatus = 1로 변경
+        const result = await signalDao.updateSigMatch(connection, params);
+        
         await connection.commit();
 
         connection.release();
