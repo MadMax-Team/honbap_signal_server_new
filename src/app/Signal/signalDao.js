@@ -86,8 +86,9 @@ async function postSignalApply(connection, params) {
 // 시그널 신청 리스트 조회 *** 7 ***
 async function getSignalApply(connection, userIdx) {
   const query = `
-      SELECT DISTINCT applyedIdx
+      SELECT DISTINCT sa.applyedIdx, u.nickName, u.profileImg
       FROM Signaling AS s, SignalApply AS sa
+      INNER JOIN UserProfile AS u ON u.userIdx = sa.applyedIdx
       WHERE s.sigStatus = 1 AND s.sigMatchStatus = 0 AND sa.userIdx = ?;
                 `;
   const [row] = await connection.query(query, userIdx);
@@ -97,8 +98,9 @@ async function getSignalApply(connection, userIdx) {
 // 시그널 신청 리스트 조회 *** 8 ***
 async function getSignalApplyed(connection, userIdx) {
   const query = `
-      SELECT DISTINCT applyedIdx
+      SELECT DISTINCT sa.userIdx, u.nickName, u.profileImg
       FROM Signaling AS s, SignalApply AS sa
+      INNER JOIN UserProfile AS u ON u.userIdx = sa.userIdx
       WHERE s.sigStatus = 1 AND s.sigMatchStatus = 0 AND sa.applyedIdx = ?;
                 `;
   const [row] = await connection.query(query, userIdx);

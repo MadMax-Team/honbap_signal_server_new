@@ -30,9 +30,8 @@ module.exports = function (app) {
     // 시그널 신청 취소 9
     app.delete("/signal/applylist", jwtMiddleware, signal.cancelSignalApply);
 
-    // 시그널 매칭 잡혔을 때 10
+    // 시그널 수락 10
     app.patch("/signal/list/matching", jwtMiddleware, signal.postSigMatch);
-
 
     // 내 시그널 ID 조회 13
     app.get("/mysignal", jwtMiddleware, signal.getMySignal);
