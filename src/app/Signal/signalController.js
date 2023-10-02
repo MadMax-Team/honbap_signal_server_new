@@ -60,13 +60,12 @@ exports.getSignalInfo = async function (req, res) {
  */
 exports.patchSignalList = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, sigStart } = req.body;
+  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu } = req.body;
 
   const modifySigList = await signalService.modifySigList(
     sigPromiseTime,
     sigPromiseArea,
     sigPromiseMenu,
-    sigStart,
     userIdxFromJWT
   );
   return res.send(baseResponse.SUCCESS);
