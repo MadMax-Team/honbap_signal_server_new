@@ -8,3 +8,4 @@ docker-compose.yaml
 Dockerfile
 config/instantclient_19_8
 .DS_STORE
+config/fcm.json

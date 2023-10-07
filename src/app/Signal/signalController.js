@@ -40,7 +40,7 @@ exports.getSignalStatus = async function (req, res){
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const result = await signalProvider.getSignalStatus(userIdxFromJWT);
   return res.send(response(baseResponse.SUCCESS, result))
-}
+};
 
 /**
  * API No. 3
@@ -171,7 +171,7 @@ exports.getMySignal = async function (req, res) {
 };
 
 /**
- * API No. 4
+ * API No. 10
  * API Name : 시그널 매칭 잡혔을 때 API
  * [PATCH] /signal/list/matching
  */
@@ -180,6 +180,7 @@ exports.postSigMatch = async function (req, res) {
   const { matchIdx } = req.body;
 
   const matching = await signalService.matching(matchIdx, userIdxFromJWT);
+  console.log("-----");
 
   /*console.log("here1")
   const createChat = await chatService.createChatRoom(userIdxFromJWT, matchIdx);
@@ -187,3 +188,5 @@ exports.postSigMatch = async function (req, res) {
 
   return res.send(baseResponse.SUCCESS);
 };
+
+

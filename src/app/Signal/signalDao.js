@@ -24,6 +24,16 @@ async function insertSignal(connection, params) {
   return row;
 }
 
+async function findMySignal(connection, userIdx) {
+  const query = `
+                    SELECT s.userIdx
+                    FROM Signaling AS s
+                    WHERE s.userIdx = ? AND s.sigStatus = 1 AND s.sigMatchStatus = 0;
+                    `;
+  const [row] = await connection.query(query, userIdx);
+  return row;   
+}
+
 // 시그널 상태 조회 *** 2 ***
 async function getSignalStatus(connection, userIdx) {
   const query = `
@@ -184,6 +194,7 @@ async function updateSigMatch(connection, params) {
 
 module.exports = {
   insertSignal, // 1
+  findMySignal,
   getSignalStatus, // 2
   getSignalInfo, //3
   updateSignal, // 4
