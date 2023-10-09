@@ -31,7 +31,7 @@ module.exports = function (app) {
     app.delete("/signal/applylist", jwtMiddleware, signal.cancelSignalApply);
 
     // 시그널 수락 10
-    app.post("/signal/list/matching", jwtMiddleware, signal.postSigMatch);
+    app.patch("/signal/list/matching", jwtMiddleware, signal.postSigMatch);
 
     // 내 시그널 ID 조회 13
     app.get("/mysignal", jwtMiddleware, signal.getMySignal);

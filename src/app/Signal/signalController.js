@@ -10,6 +10,7 @@ const { response, errResponse } = require("../../../config/response");
 const logger = require("../../../config/winston");
 const crypto = require("crypto");
 const regexEmail = require("regex-email");
+const {sendFcmMessage} = require("../../../config/fcm.js")
 //controller : 판단 부분.
 
 /**
@@ -177,14 +178,19 @@ exports.getMySignal = async function (req, res) {
  */
 exports.postSigMatch = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { matchIdx } = req.body;
+  const { applyIdx } = req.body;
 
-  const matching = await signalService.matching(matchIdx, userIdxFromJWT);
-  console.log("-----");
+  //user: 시그널 수락자 
+  //apply: 시그널 전송자
+  const matching = await signalService.matching(applyIdx, userIdxFromJWT);
 
   /*console.log("here1")
   const createChat = await chatService.createChatRoom(userIdxFromJWT, matchIdx);
   console.log("here2")*/
+
+  // 매칭된 두 명에게 fcmMessage 전송 필요
+  // 추후 token 값 변경 필요
+  sendFcmMessage("fAHWjSWbTquvbtpvIk4zx8:APA91bGsR4gijFS3xD2K0oLxyJLML6QI8Of0jK7lJCLAf3aw2VRdqRrgxkuyjkv3pVvklNrakkxAq-rkPNr3f4npn-ycRFftzbPGSoJiUJag98PWNtIiSZHZA2yDrW5NcXwHQh8sellC");
 
   return res.send(baseResponse.SUCCESS);
 };
