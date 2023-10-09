@@ -15,27 +15,38 @@ const { connect } = require("http2");
 
 // 시그널 등록 1
 exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromiseMenu, userIdx) {
-    try {
-        let checkSigWrite = 1;
 
-        if(sigPromiseTime == null && sigPromiseArea == null && sigPromiseMenu == null) {
-            checkSigWrite = 0;
-        }
+    let checkSigWrite = 1;
 
-        let sigStatus = 1;
-        let sigMatchStatus = 0;
-
-        const signalRows = [userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, sigPromiseMenu, checkSigWrite];
-        const connection = await pool.getConnection(async (conn) => conn);
-        
-        const createSignalResult = await signalDao.insertSignal(connection, signalRows);
-
-        connection.release();
-        return createSignalResult;
+    if(sigPromiseTime == null && sigPromiseArea == null && sigPromiseMenu == null) {
+        checkSigWrite = 0;
     }
-    catch (err) {
-        logger.error(`App - createSignal Service error\n: ${err.message}`);
+
+    let sigStatus = 1;
+    let sigMatchStatus = 0;
+
+    const connection = await pool.getConnection(async (conn) => conn);
+    
+    try {
+        const signalRows = [userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, sigPromiseMenu, checkSigWrite];
+        await connection.beginTransaction();
+        
+        //이미 시그널 값이 존재하면 time, area, menu update만 해줌
+        const findMySignalResult = await signalDao.findMySignal(connection, userIdx);
+        if (findMySignalResult.length > 0)
+            result = await signalDao.updateSignal(connection, signalRows);
+        else
+            result = await signalDao.insertSignal(connection, signalRows);
+
+        await connection.commit();
+    
+        return response(baseResponse.WISHLISTS_PERSON_UPDATE_SUCCESS, result[0].info);
+    } catch (err) {
+        await connection.rollback();
+        logger.error(`App - Signal On dao error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
+    } finally {
+        connection.release();
     }
 }
 
@@ -114,27 +125,22 @@ exports.signalContents = async function (userIdx, sigPromiseTime, sigPromiseArea
 
 
 // 매칭 상대 업데이트
-exports.matching = async function (matchIdx, userIdx) {
+exports.matching = async function (applyIdx, applyedIdx) {
     const connection = await pool.getConnection(async (conn) => conn);
     try {
-        await connection.beginTransaction();
-        const params = [matchIdx, userIdx];
-        const user = userIdx;
 
-        //시그널 수락자, 신청자 둘다 상태 변경해줘야함
-        //signalApply table에서 전부 삭제 ()
-        //const result2 = await signalDao.deleteSignalApply(connection, user);
+        //시그널 수락자, 신청자 둘다 signalApply table에서 전부 삭제 ()
+        params = [applyIdx, applyedIdx, applyIdx, applyedIdx]
+        const result = await signalDao.deleteSignalApply(connection, params);
 
+        //시그널 신청자(userIdx), 시그널 수락자(sigMatchStatus)
         //signal상태 sigStatus = 0, sigMatchStatus = 1로 변경
-        const result = await signalDao.updateSigMatch(connection, params);
-        
-        await connection.commit();
+        params = [applyIdx, applyedIdx]
+        const result3 = await signalDao.updateSigMatch(connection, params);
+        const result4 = await signalDao.signalOff(connection, applyedIdx);
 
-        connection.release();
         return result;
     } catch (err) {
-        await connection.rollback();
-        connection.release();
         logger.error(`App - matching Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }

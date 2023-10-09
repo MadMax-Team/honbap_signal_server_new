@@ -24,6 +24,16 @@ async function insertSignal(connection, params) {
   return row;
 }
 
+async function findMySignal(connection, userIdx) {
+  const query = `
+                    SELECT s.userIdx
+                    FROM Signaling AS s
+                    WHERE s.userIdx = ? AND s.sigStatus = 1 AND s.sigMatchStatus = 0;
+                    `;
+  const [row] = await connection.query(query, userIdx);
+  return row;   
+}
+
 // 시그널 상태 조회 *** 2 ***
 async function getSignalStatus(connection, userIdx) {
   const query = `
@@ -107,13 +117,13 @@ async function getSignalApplyed(connection, userIdx) {
 }
 
 // 시그널 신청 리스트 삭제 (자동) *** 10 ***
-async function deleteSignalApply(connection, userIdx) {
-  const query = `
-                    DELETE FROM SignalApply
-                    WHERE userIdx = ?;
-                    `;
-  const [row] = await connection.query(query, userIdx);
-  return row;
+async function deleteSignalApply(connection, params) {
+    const query = `
+      DELETE FROM SignalApply
+      WHERE userIdx IN (?, ?) OR applyedIdx IN (?, ?);
+    `;
+    const [row] = await connection.query(query, params);
+    return row;
 }
 
 // 시그널 신청 취소 *** 9 ***
@@ -174,7 +184,7 @@ async function getInfoFromNickName(connection, nickName) {
 async function updateSigMatch(connection, params) {
   const query =   `
                   UPDATE Signaling
-                  SET matchIdx = ?, sigStatus = 0, sigMatchStatus = 1
+                  SET sigStatus = 0, sigMatchStatus = 1, applyedIdx = ?
                   WHERE userIdx = ? AND sigStatus = 1;
                   `;
   const [row] = await connection.query(query, params);
@@ -184,6 +194,7 @@ async function updateSigMatch(connection, params) {
 
 module.exports = {
   insertSignal, // 1
+  findMySignal,
   getSignalStatus, // 2
   getSignalInfo, //3
   updateSignal, // 4
