@@ -62,5 +62,5 @@ module.exports = function (app) {
   })
 
   // 16. FCM update
-  app.patch("/user/fcm", user.updateFCM);
+  app.patch("/user/fcm", jwtMiddleware, user.updateFCM);
 };
