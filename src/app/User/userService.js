@@ -273,3 +273,18 @@ exports.uploadImage = async function (userIdx,location){
         return errResponse(baseResponse.DB_ERROR);
     }
 }
+
+exports.updateFCM = async function (userIdx, fcm){
+    const connection = await pool.getConnection(async (conn) => conn);
+    try{
+        const params = [fcm, userIdx];
+
+        const fcmResult = await userDao.upateFCMById(connection, params);
+        connection.release();
+        return fcmResult;
+    }
+    catch(err){
+        logger.error(`App - fcm update error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+}

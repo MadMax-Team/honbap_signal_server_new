@@ -502,4 +502,29 @@ exports.verify = async function (req, res) {
   }
 };
 
+exports.updateFCM = async function (req, res) 
+{
+  const fcm = req.body.fcm;
+  // const userIdxFromJwt = req.verifiedToken.userIdx;
+  const userIdx = 7; 
+
+  if (!fcm) {
+    return res.send(errResponse(baseResponse.FCM_IS_EMPTY));
+  }
+
+  // const checkFCM = await userProvider.getFCM(
+  //   userIdx,
+  //   fcm
+  // );
+  // if(checkFCM){
+  //   return res.send(response(baseResponse.SUCCESS, "already equal FCM"));
+  // }
+ 
+  const fcmResponse = await userService.updateFCM(
+    userIdx,
+    fcm
+  );
+    return res.send(response(baseResponse.SUCCESS, "refresh FCM"));
+};
+
 

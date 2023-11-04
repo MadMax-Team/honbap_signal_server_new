@@ -54,13 +54,13 @@ module.exports = function (app) {
   //   console.log(req.file.location);
   //   res.status(200).json({location : req.file.location})
   // });
-//
 
   // 15. 유저프로필 이미지 수정 API
-
-
   // socket Test
   app.get('/', function(req, res){
     res.sendFile( __dirname + '/test_socket.html')
   })
+
+  // 16. FCM update
+  app.patch("/user/fcm", user.updateFCM);
 };
