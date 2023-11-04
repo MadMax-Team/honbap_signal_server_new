@@ -190,7 +190,8 @@ exports.postSigMatch = async function (req, res) {
 
   // 매칭된 두 명에게 fcmMessage 전송 필요
   // 추후 token 값 변경 필요
-  sendFcmMessage("fAHWjSWbTquvbtpvIk4zx8:APA91bGsR4gijFS3xD2K0oLxyJLML6QI8Of0jK7lJCLAf3aw2VRdqRrgxkuyjkv3pVvklNrakkxAq-rkPNr3f4npn-ycRFftzbPGSoJiUJag98PWNtIiSZHZA2yDrW5NcXwHQh8sellC");
+  const fcm = await userProvider.getFCM(userIdxFromJWT);
+  if(fcm) sendFcmMessage(fcm);
 
   return res.send(baseResponse.SUCCESS);
 };

@@ -267,9 +267,9 @@ async function upateFCMById(connection,params){
 
 async function selectFCM(connection, params) {
     const query = `
-                SELECT userIdx
+                SELECT fcm
                 FROM User
-                WHERE fcm = ?;
+                WHERE userIdx = ?;
                 `;
 
     const [row] = await connection.query(query, params);
