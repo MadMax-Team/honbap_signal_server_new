@@ -130,7 +130,7 @@ async function deleteSignalApply(connection, params) {
 async function cancelSignalApply(connection, params) {
   const query = `
                     DELETE FROM SignalApply
-                    WHERE userIdx = ? OR applyedIdx = ?;
+                    WHERE userIdx = ? AND applyedIdx = ?;
                     `;
   const [row] = await connection.query(query, params);
   return row;
