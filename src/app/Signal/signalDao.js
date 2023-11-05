@@ -61,7 +61,7 @@ async function getSignalInfo(connection, params) {
 async function updateSignal(connection, params) {
   const query = `
                   UPDATE Signaling
-                  SET sigPromiseTime = ?, sigPromiseArea = ?, sigPromiseMenu = ?, updateAt = default
+                  SET sigPromiseTime = STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s'), sigPromiseArea = ?, sigPromiseMenu = ?, updateAt = default
                   WHERE userIdx = ? AND sigStatus = 1 AND sigMatchStatus = 0;
                   `;
   const [row] = await connection.query(query, params);
