@@ -24,6 +24,9 @@ module.exports = function (app) {
   // 5. 유저 개인정보 조회 API
   app.get("/user/myinfo", jwtMiddleware, user.getUserInfo);
 
+  // 5-2. userIdx로 개인정보 조회 API
+  app.get("/user/userIdxinfo/:userIdx", user.getUserIdxInfo);
+
   // 6. 유저 프로필 조회 (마이페이지) API
   app.get("/user/mypage", jwtMiddleware, user.getUserProfile);
 

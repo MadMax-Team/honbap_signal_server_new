@@ -143,10 +143,9 @@ async function existUserNickname(connection, nickName) {
 //유저id 없어져서 지움
 async function selectUserInfo(connection, userIdx) {
     const query = `
-                  SELECT email, userName, birth,
-                         phoneNum, sex, updateAt, createAt
-                  FROM User
-                  WHERE userIdx = ?;
+                    SELECT u.*, up.*
+                    FROM User AS u JOIN UserProfile AS up ON u.userIdx = up.userIdx
+                    WHERE u.userIdx = ? ;
                   `;
     const [row] = await connection.query(query, userIdx);
     return row;

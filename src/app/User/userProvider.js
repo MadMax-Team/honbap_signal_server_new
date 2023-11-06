@@ -113,7 +113,6 @@ exports.getUserInfo = async function (userIdx) {
 
     const userInfoResult = await userDao.selectUserInfo(connection, userIdx);
     connection.release();
-    console.log(userInfoResult[0])
     return userInfoResult;
   } catch (err) {
     logger.error(`getUserInfo Provider error\n: ${err.message}`);
