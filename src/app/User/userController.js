@@ -161,7 +161,7 @@ exports.postUserProfile = async function (req, res) {
 /**
  * API No. 4
  * API Name : 유저 인덱스 조회 API
- * [GET] /app/user/signup/:userId
+ * [GET] /app/user/signup/:userIdx
  */
 
 exports.getUserIdx = async function (req, res) {
@@ -200,6 +200,20 @@ exports.getUserInfo = async function (req, res) {
   const userInfoResponse = await userProvider.getUserInfo(userIdxFromJWT);
 
   return res.send(response(baseResponse.SUCCESS, userInfoResponse));
+};
+
+
+/**
+ * API No. 5-2
+ * API Name : userIdx 개인정보 조회 API
+ * [GET] /app/user/userIdxinfo
+ */
+exports.getUserIdxInfo = async function (req, res) {
+  const userIdx = req.params.userIdx
+
+  const userIdxInfoResponse = await userProvider.getUserInfo(userIdx);
+
+  return res.send(response(baseResponse.SUCCESS, userIdxInfoResponse));
 };
 
 /**
