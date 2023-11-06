@@ -33,7 +33,7 @@ async function getLocation(connection, userIdx) {
 
 async function getSignalOnUser(connection, params){
   const query = `
-                  SELECT u.*, up.nickName, s.signalIdx, s.sigPromiseArea, s.sigPromiseTime, s.checkSigWrite, s.sigPromiseMenu
+                  SELECT u.*, up.*, s.signalIdx, s.sigPromiseArea, s.sigPromiseTime, s.checkSigWrite, s.sigPromiseMenu
                   FROM Signaling AS s
                           LEFT JOIN User AS u ON s.userIdx = u.userIdx
                           LEFT JOIN UserProfile AS up ON s.userIdx = up.userIdx
