@@ -61,7 +61,7 @@ async function getSignalInfo(connection, params) {
 async function updateSignal(connection, params) {
   const query = `
                   UPDATE Signaling
-                  SET sigPromiseTime = ?, sigPromiseArea = ?, sigPromiseMenu = ?, updateAt = default
+                  SET sigPromiseTime = STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s'), sigPromiseArea = ?, sigPromiseMenu = ?, updateAt = default
                   WHERE userIdx = ? AND sigStatus = 1 AND sigMatchStatus = 0;
                   `;
   const [row] = await connection.query(query, params);
@@ -130,7 +130,7 @@ async function deleteSignalApply(connection, params) {
 async function cancelSignalApply(connection, params) {
   const query = `
                     DELETE FROM SignalApply
-                    WHERE userIdx = ? OR applyedIdx = ?;
+                    WHERE userIdx = ? AND applyedIdx = ?;
                     `;
   const [row] = await connection.query(query, params);
   return row;

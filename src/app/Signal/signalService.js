@@ -40,10 +40,10 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
 
         await connection.commit();
     
-        return response(baseResponse.WISHLISTS_PERSON_UPDATE_SUCCESS, result[0].info);
+        return result;
     } catch (err) {
         await connection.rollback();
-        logger.error(`App - Signal On dao error\n: ${err.message}`);
+        logger.error(`App - [1]Signal On dao error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     } finally {
         connection.release();
