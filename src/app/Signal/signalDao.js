@@ -192,6 +192,20 @@ async function updateSigMatch(connection, params) {
   return row;
 }
 
+async function matchSignal(connection, params) {
+  const query = `
+                  SELECT *
+                  FROM Signaling AS s
+                  WHERE userIdx = (
+                      SELECT s.applyedIdx
+                      FROM Signaling AS s
+                      WHERE s.userIdx= ? 
+                      AND s.sigStatus = 0 AND s.sigMatchStatus = 1) ;
+                    `;
+  const [row] = await connection.query(query, params);
+  return row;
+}
+
 module.exports = {
   insertSignal, // 1
   findMySignal,
@@ -209,4 +223,5 @@ module.exports = {
   arzoneList, // 14
   modifySignalContents, //15
   getInfoFromNickName, //16
+  matchSignal
 };

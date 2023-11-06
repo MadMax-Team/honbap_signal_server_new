@@ -196,4 +196,13 @@ exports.postSigMatch = async function (req, res) {
   return res.send(baseResponse.SUCCESS);
 };
 
-
+/**
+ * API No. 11
+ * API Name : 매칭 상대 정보 조회 API
+ * [GET] /signal/matchInfo
+ */
+exports.getMatchInfo = async function (req, res) {
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  const mySignal = await signalProvider.matchSignal(userIdxFromJWT);
+  return res.send(response(baseResponse.SUCCESS, mySignal));
+};
