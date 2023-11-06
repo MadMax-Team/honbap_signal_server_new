@@ -352,6 +352,12 @@ module.exports = {
     code: 5003,
     message: "SMS 권한 NO"
   },
+
+  FCM_IS_EMPTY : {
+    isSuccess: false,
+    code: 5004,
+    message: "FCM 빈 요청값"
+  }
 };
 
 

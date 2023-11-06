@@ -254,6 +254,29 @@ async function insertUsernull(connection,idx){
     return row;
 }
 
+async function upateFCMById(connection,params){
+    const query =`
+                UPDATE User
+                SET fcm = ?
+                WHERE userIdx = ?;
+                `;
+    const [row] = await connection.query(query,params);
+
+    return row;
+}
+
+async function selectFCM(connection, params) {
+    const query = `
+                SELECT fcm
+                FROM User
+                WHERE userIdx = ?;
+                `;
+
+    const [row] = await connection.query(query, params);
+
+    return row;
+}
+
 
 module.exports = {
     existUserId, // 1
@@ -275,5 +298,6 @@ module.exports = {
     selectKakaoId, //15
     updateUserImage, // 16
     insertUsernull, //17
-
+    upateFCMById, // 18
+    selectFCM // 19
   };

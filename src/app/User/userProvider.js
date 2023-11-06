@@ -153,4 +153,3 @@ exports.getKakaoId = async function (provider, id) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
-
