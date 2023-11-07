@@ -10,7 +10,7 @@ const { response, errResponse } = require("../../../config/response");
 const logger = require("../../../config/winston");
 const crypto = require("crypto");
 const regexEmail = require("regex-email");
-const {sendFcmMessage} = require("../../../config/fcm.js")
+const {sendFcmMessage, buildSignalMessage} = require("../../../config/fcm.js")
 //controller : 판단 부분.
 
 /**
@@ -191,7 +191,7 @@ exports.postSigMatch = async function (req, res) {
   // 매칭 fcmMessage 전송 필요
   // 추후 token 값 변경 필요
   const fcm = await userProvider.getFCM(userIdxFromJWT);
-  if(fcm) sendFcmMessage(fcm);
+  if(fcm) sendFcmMessage(buildSignalMessage(fcm, "10000", applyIdx, "test", "test", "test"));
 
   return res.send(baseResponse.SUCCESS);
 };
