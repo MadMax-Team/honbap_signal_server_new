@@ -28,7 +28,8 @@ function getAccessToken() {
   });
 }
 
-function buildFCMMessage(token) {
+//10001, 11001
+function buildSignalMessage(token, code, userIdx, nickName, sigPromiseArea, sigPromiseTime, sigPromiseFood){
     return {
         "message": {
             "token": token,
@@ -37,26 +38,36 @@ function buildFCMMessage(token) {
                 "body": "FCM Test Body"
             },
             "data": {
-                "click_action": "test"
-            },
-            "android": {
-                "notification": {
-                    "click_action": "Test"
-                }
-            },
-            "apns": {
-                "payload": {
-                    "aps": {
-                        "category": "Message Category",
-                        "content-available": 1
-                    }
-                }
+                "code": code,
+                "userIdx": userIdx,
+                "nickName": nickName,
+                "sigPromiseArea": sigPromiseArea,
+                "sigPromiseTime": sigPromiseTime,
+                "sigPromiseFood": sigPromiseTime
             }
         }
-    };
+    };  
 }
 
-function sendFcmMessage(token){
+//10002
+function buildIdxMessage(token, code, userIdx, nickName) {
+    return {
+        "message": {
+            "token": token,
+            "notification": {
+                "title": "FCM Test Title",
+                "body": "FCM Test Body"
+            },
+            "data": {
+                "code": code,
+                "userIdx": userIdx,
+                "nickName": nickName,
+            }
+        }
+    };  
+}
+
+function sendFcmMessage(token, FCMMessage){
     getAccessToken().then(function(accessToken) {
         const options = {
         hostname: HOST,
@@ -83,9 +94,9 @@ function sendFcmMessage(token){
         console.log(err);
         });
 
-        request.write(JSON.stringify(buildFCMMessage(token)));
+        request.write(JSON.stringify(FCMMessage));
         request.end();
     });
 }
 
-module.exports = { sendFcmMessage };
+module.exports = { sendFcmMessage, buildSignalMessage, buildIdxMessage };

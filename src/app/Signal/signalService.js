@@ -129,15 +129,22 @@ exports.matching = async function (applyIdx, applyedIdx) {
     const connection = await pool.getConnection(async (conn) => conn);
     try {
 
-        //시그널 수락자, 신청자 둘다 signalApply table에서 전부 삭제 ()
+        //user = applyedIdx: 시그널 수락자 
+        //apply = applyIdx : 시그널 신청자
+
+        //시그널 수락자, 신청자 둘다 signalApply table에서 전부 삭제
         params = [applyIdx, applyedIdx, applyIdx, applyedIdx]
         const result = await signalDao.deleteSignalApply(connection, params);
 
-        //시그널 신청자(userIdx), 시그널 수락자(sigMatchStatus)
-        //signal상태 sigStatus = 0, sigMatchStatus = 1로 변경
+        //수락자 정보가 없으면 신청자 정보로 대체
+
+        //시그널 수락자의 signal상태 sigStatus = 0, sigMatchStatus = 1로 변경 후 
+        //applyedIdx 입력
         params = [applyIdx, applyedIdx]
         const result3 = await signalDao.updateSigMatch(connection, params);
-        const result4 = await signalDao.signalOff(connection, applyedIdx);
+
+         //시그널 신청자는 Signaling에서 삭제
+        const result4 = await signalDao.signalOff(connection, applyIdx);
 
         return result;
     } catch (err) {

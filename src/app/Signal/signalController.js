@@ -180,15 +180,15 @@ exports.postSigMatch = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const { applyIdx } = req.body;
 
-  //user: 시그널 수락자 
-  //apply: 시그널 전송자
+  //user = applyedIdx: 시그널 수락자 
+  //apply = applyIdx : 시그널 전송자
   const matching = await signalService.matching(applyIdx, userIdxFromJWT);
 
   /*console.log("here1")
   const createChat = await chatService.createChatRoom(userIdxFromJWT, matchIdx);
   console.log("here2")*/
 
-  // 매칭된 두 명에게 fcmMessage 전송 필요
+  // 매칭 fcmMessage 전송 필요
   // 추후 token 값 변경 필요
   const fcm = await userProvider.getFCM(userIdxFromJWT);
   if(fcm) sendFcmMessage(fcm);

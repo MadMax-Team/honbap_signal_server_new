@@ -117,7 +117,7 @@ async function getSignalApplyed(connection, userIdx) {
   return row;
 }
 
-// 시그널 신청 리스트 삭제 (자동) *** 10 ***
+// 시그널 신청 리스트 삭제 *** 10 ***
 async function deleteSignalApply(connection, params) {
     const query = `
       DELETE FROM SignalApply
@@ -218,7 +218,7 @@ module.exports = {
   postSignalApply, // 8
   getSignalApply, // 9
   getSignalApplyed,
-  deleteSignalApply, // 10
+  deleteSignalApply, // 10\
   cancelSignalApply, // 11
   mySignal, // 13
   arzoneList, // 14
