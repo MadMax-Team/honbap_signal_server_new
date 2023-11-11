@@ -62,7 +62,8 @@ async function updateSignal(connection, params) {
   const query = `
                   UPDATE Signaling
                   SET sigPromiseTime = STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s'), sigPromiseArea = ?, sigPromiseMenu = ?, updateAt = default
-                  WHERE userIdx = ? AND sigStatus = 1 AND sigMatchStatus = 0;
+                  WHERE userIdx = ? AND 
+                  ((sigStatus = 1 AND sigMatchStatus = 0) OR (sigStatus = 0 AND sigMatchStatus = 1));
                   `;
   const [row] = await connection.query(query, params);
 
@@ -116,7 +117,7 @@ async function getSignalApplyed(connection, userIdx) {
   return row;
 }
 
-// 시그널 신청 리스트 삭제 (자동) *** 10 ***
+// 시그널 신청 리스트 삭제 *** 10 ***
 async function deleteSignalApply(connection, params) {
     const query = `
       DELETE FROM SignalApply
@@ -192,6 +193,20 @@ async function updateSigMatch(connection, params) {
   return row;
 }
 
+async function matchSignal(connection, params) {
+  const query = `
+                  SELECT *
+                  FROM Signaling AS s
+                  WHERE userIdx = (
+                      SELECT s.applyedIdx
+                      FROM Signaling AS s
+                      WHERE s.userIdx= ? 
+                      AND s.sigStatus = 0 AND s.sigMatchStatus = 1) ;
+                    `;
+  const [row] = await connection.query(query, params);
+  return row;
+}
+
 module.exports = {
   insertSignal, // 1
   findMySignal,
@@ -203,10 +218,11 @@ module.exports = {
   postSignalApply, // 8
   getSignalApply, // 9
   getSignalApplyed,
-  deleteSignalApply, // 10
+  deleteSignalApply, // 10\
   cancelSignalApply, // 11
   mySignal, // 13
   arzoneList, // 14
   modifySignalContents, //15
   getInfoFromNickName, //16
+  matchSignal
 };

@@ -20,6 +20,10 @@ if (process.env.NODE_ENV === "development") {
 } else {
   port = 3001;
 }
+
 const webserver = express().listen(port);
 console.log(`${process.env.NODE_ENV} - API Server Start At Port ${port}`);
+
+sendFcmMessage("fAHWjSWbTquvbtpvIk4zx8:APA91bGsR4gijFS3xD2K0oLxyJLML6QI8Of0jK7lJCLAf3aw2VRdqRrgxkuyjkv3pVvklNrakkxAq-rkPNr3f4npn-ycRFftzbPGSoJiUJag98PWNtIiSZHZA2yDrW5NcXwHQh8sellC");
+
 chatSocket(webserver);

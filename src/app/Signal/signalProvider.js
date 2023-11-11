@@ -119,3 +119,19 @@ exports.getInfoFromNickName = async function (nickName) {
     return errResponse(baseResponse.DB_ERROR);
   }
 }
+
+// 로그인한 유저들의 signalIdx
+exports.matchSignal = async function (userIdx) {
+  try {
+    const params = [userIdx];
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const matchSignalResult = await signalDao.matchSignal(connection, params);
+    connection.release();
+
+    return matchSignalResult;
+  } catch (err) {
+    logger.error(`matchSignal Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};

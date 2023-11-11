@@ -10,7 +10,7 @@ const { response, errResponse } = require("../../../config/response");
 const logger = require("../../../config/winston");
 const crypto = require("crypto");
 const regexEmail = require("regex-email");
-const {sendFcmMessage} = require("../../../config/fcm.js")
+const {sendFcmMessage, buildSignalMessage} = require("../../../config/fcm.js")
 //controller : 판단 부분.
 
 /**
@@ -180,20 +180,29 @@ exports.postSigMatch = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const { applyIdx } = req.body;
 
-  //user: 시그널 수락자 
-  //apply: 시그널 전송자
+  //user = applyedIdx: 시그널 수락자 
+  //apply = applyIdx : 시그널 전송자
   const matching = await signalService.matching(applyIdx, userIdxFromJWT);
 
   /*console.log("here1")
   const createChat = await chatService.createChatRoom(userIdxFromJWT, matchIdx);
   console.log("here2")*/
 
-  // 매칭된 두 명에게 fcmMessage 전송 필요
+  // 매칭 fcmMessage 전송 필요
   // 추후 token 값 변경 필요
   const fcm = await userProvider.getFCM(userIdxFromJWT);
-  if(fcm) sendFcmMessage(fcm);
+  if(fcm) sendFcmMessage(buildSignalMessage(fcm, "10000", applyIdx, "test", "test", "test"));
 
   return res.send(baseResponse.SUCCESS);
 };
 
-
+/**
+ * API No. 11
+ * API Name : 매칭 상대 정보 조회 API
+ * [GET] /signal/matchInfo
+ */
+exports.getMatchInfo = async function (req, res) {
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  const mySignal = await signalProvider.matchSignal(userIdxFromJWT);
+  return res.send(response(baseResponse.SUCCESS, mySignal));
+};

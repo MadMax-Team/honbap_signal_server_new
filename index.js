@@ -3,7 +3,7 @@ const { logger } = require("./config/winston");
 // const { Server } = require("http2");
 const { chatSocket } = require("./src/app/Chat/chatSocket");
 // const { sequelize } = require('./models');
-
+const {sendFcmMessage} = require("./config/fcm.js")
 // sequelize.sync({ force: false })
 // .then(() => {
 //     console.log('데이터베이스 연결 성공');
@@ -12,7 +12,6 @@ const { chatSocket } = require("./src/app/Chat/chatSocket");
 //     console.error(err);
 // });
 let port;
-
 if (process.env.NODE_ENV === "development") {
   port = 8080;
 } else if (process.env.NODE_ENV === "production") {
