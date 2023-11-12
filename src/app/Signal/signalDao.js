@@ -228,8 +228,8 @@ async function matchSignal(connection, params) {
 async function patchSignalStatus(connection, userIdx) {
   const query = `
                     UPDATE Signaling
-                    SET sigMatchStatus = 0, sigStatus = 0
-                    WHERE userIdx = ?; 
+                    SET sigMatchStatus = 0
+                    WHERE userIdx = ? AND sigStauts = 1 AND sigMatchStatus = 0; 
   `
   const [row] = await connection.query(query, userIdx);
   return row;
