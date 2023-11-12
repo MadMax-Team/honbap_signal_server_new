@@ -30,11 +30,12 @@ exports.getSignalList = async function (userIdx)
       logger.info(signalOnUserLocation[0].longitude);
       
       let loginUserAndSignalOnUserDistance = haversine(loginUserLocation[0], signalOnUserLocation[0]);
-      let nearSignalOnUserList = {};
+      
       if(loginUserAndSignalOnUserDistance < 10 )
       {
         if(signalOnUserIdxList[i].userIdx != userIdx)
         {
+          let nearSignalOnUserList = {};
           nearSignalOnUserList.userIdx = signalOnUserIdxList[i].userIdx;
           nearSignalOnUserList.checkSigWrite = signalOnUserIdxList[i].checkSigWrite;
           nearSignalOnUserList.userName = signalOnUserIdxList[i].userName;
@@ -49,8 +50,8 @@ exports.getSignalList = async function (userIdx)
           nearSignalOnUserList.sigPromiseArea = signalOnUserIdxList[i].sigPromiseArea;
           nearSignalOnUserList.sigPromiseTime = signalOnUserIdxList[i].sigPromiseTime;
           nearSignalOnUserList.distance = loginUserAndSignalOnUserDistance;
+          nearSignalOnList.push(nearSignalOnUserList);
         }
-        nearSignalOnList.push(nearSignalOnUserList);
       }
       else if(loginUserAndSignalOnUserDistance > 10)
       {
