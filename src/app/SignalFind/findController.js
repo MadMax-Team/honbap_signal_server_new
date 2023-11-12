@@ -28,7 +28,7 @@ exports.postMyLocation = async function (req, res) {
 
     const locationResponse = await findService.createUserLocation(userIdx, latitude, longitude);
 
-    return res.send(response(locationResponse));
+    return res.send(locationResponse);
   }
 /**
  * API No. 2
@@ -42,18 +42,18 @@ exports.postMyLocation = async function (req, res) {
 
     // 빈 값 체크
     if(!latitude)
-      return res.send(response(baseResponse.SIGNALFIND_LATITUDE_EMPTY));
+      return res.send(baseResponse.SIGNALFIND_LATITUDE_EMPTY);
 
     if(!longitude)
-      return res.send(response(baseResponse.SIGNALFIND_LONGITUDE_EMPTY));
+      return res.send(baseResponse.SIGNALFIND_LONGITUDE_EMPTY);
 
     if(!userIdx)
-    return res.send(response(baseResponse.SIGNALFIND_USERIDX_EMPTY)); 
+    return res.send(baseResponse.SIGNALFIND_USERIDX_EMPTY); 
 
     const params = [latitude, longitude, userIdx]
     const result = await findService.updateLocation(params);
 
-    return res.send(response(baseResponse.SUCCESS, result[0]));
+    return res.send(baseResponse.SUCCESS, result[0]);
   }
 /**
  * API No. 3
@@ -66,7 +66,7 @@ exports.postMyLocation = async function (req, res) {
 
     // 빈 값 체크
     if(!userIdx)
-    return res.send(response(baseResponse.SIGNALFIND_USERIDX_EMPTY));
+    return res.send(baseResponse.SIGNALFIND_USERIDX_EMPTY);
 
     // const params = [userIdx];
     const signalListResponse = await findProvider.getSignalList(userIdx);

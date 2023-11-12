@@ -15,6 +15,8 @@ exports.getSignalList = async function (userIdx)
 
     const signalOnUserIdxList = await findDao.getSignalOnUser(connection, params);
 
+    if(!signalOnUserIdxList) return signalOnUserIdxList;
+
     const loginUserLocation = await findDao.getLocation(connection, userIdx);
     
     
