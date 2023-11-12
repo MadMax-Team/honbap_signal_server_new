@@ -36,6 +36,9 @@ module.exports = function (app) {
     // 매칭 상대 정보 조회 11
     app.get("/signal/matchInfo", jwtMiddleware, signal.getMatchInfo);
 
+    // 시그널 상태 수정 12 (관리자)
+    app.patch("/signal/status", jwtMiddleware, signal.patchSignalStatus);
+    
     // 내 시그널 ID 조회 13
     app.get("/mysignal", jwtMiddleware, signal.getMySignal);
 
