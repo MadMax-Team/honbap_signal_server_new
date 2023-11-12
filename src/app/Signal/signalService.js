@@ -150,7 +150,7 @@ exports.matching = async function (applyIdx, applyedIdx) {
 
         //시그널 수락자의 signal상태 sigStatus = 0, sigMatchStatus = 1로 변경 후 
         //applyedIdx 입력
-        params = [applyIdx, applyedIdx]
+        params = [applyedIdx, applyIdx]
         const result3 = await signalDao.updateSigMatch(connection, params);
 
          //시그널 신청자는 Signaling에서 삭제
