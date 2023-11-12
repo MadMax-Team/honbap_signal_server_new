@@ -19,13 +19,14 @@ const {sendFcmMessage, buildSignalMessage} = require("../../../config/fcm.js")
  * [POST] /signal/list
  */
 exports.postSignal = async function (req, res) {
-  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu } = req.body;
+  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, fcm} = req.body;
   const userIdx = req.verifiedToken.userIdx;
   
   const result = await signalService.createSignal(
     sigPromiseTime, 
     sigPromiseArea, 
     sigPromiseMenu, 
+    fcm,
     userIdx
   );
 
@@ -182,7 +183,9 @@ exports.postSigMatch = async function (req, res) {
 
   //user = applyedIdx: 시그널 수락자 
   //apply = applyIdx : 시그널 전송자
-  const matching = await signalService.matching(applyIdx, userIdxFromJWT);
+  const matchingInfo = await signalService.matching(applyIdx, userIdxFromJWT);
+
+  console.log(matchingInfo);
 
   /*console.log("here1")
   const createChat = await chatService.createChatRoom(userIdxFromJWT, matchIdx);
@@ -190,8 +193,8 @@ exports.postSigMatch = async function (req, res) {
 
   // 매칭 fcmMessage 전송 필요
   // 추후 token 값 변경 필요
-  const fcm = await userProvider.getFCM(userIdxFromJWT);
-  if(fcm) sendFcmMessage(buildSignalMessage(fcm, "10000", applyIdx, "test", "test", "test"));
+ // const fcm = await userProvider.getFCM(userIdxFromJWT);
+  //if(fcm) sendFcmMessage(buildSignalMessage(fcm, "10000", applyIdx, "test", "test", "test"));
 
   return res.send(baseResponse.SUCCESS);
 };
