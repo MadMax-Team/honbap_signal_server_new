@@ -30,9 +30,10 @@ exports.getSignalList = async function (userIdx)
       logger.info(signalOnUserLocation[0].longitude);
       
       let loginUserAndSignalOnUserDistance = haversine(loginUserLocation[0], signalOnUserLocation[0]);
-      let nearSignalOnUserList = {};
+      
       if(loginUserAndSignalOnUserDistance < 10 )
       {
+        let nearSignalOnUserList = {};
         if(signalOnUserIdxList[i].userIdx != userIdx)
         {
           nearSignalOnUserList.userIdx = signalOnUserIdxList[i].userIdx;
