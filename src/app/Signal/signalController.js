@@ -209,3 +209,14 @@ exports.getMatchInfo = async function (req, res) {
   const mySignal = await signalProvider.matchSignal(userIdxFromJWT);
   return res.send(response(baseResponse.SUCCESS, mySignal));
 };
+
+/**
+ * API No. 12
+ * API Name : 시그널 상태수정 API
+ * [PATCH] /signal/status
+ */
+exports.patchSignalStatus = async function (req, res){
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  const result = await signalProvider.patchSignalStatus(userIdxFromJWT);
+  return res.send(response(baseResponse.SUCCESS, result))
+};

@@ -224,6 +224,17 @@ async function matchSignal(connection, params) {
   return row;
 }
 
+// 시그널 상태 수정 *** 12 ***
+async function patchSignalStatus(connection, userIdx) {
+  const query = `
+                    UPDATE Signaling
+                    SET sigMatchStatus = 0, sigStatus = 0
+                    WHERE userIdx = ?; 
+  `
+  const [row] = await connection.query(query, userIdx);
+  return row;
+}
+
 module.exports = {
   insertSignal, // 1
   findMySignal,
@@ -241,5 +252,6 @@ module.exports = {
   arzoneList, // 14
   modifySignalContents, //15
   getInfoFromNickName, //16
-  matchSignal
+  matchSignal,
+  patchSignalStatus
 };

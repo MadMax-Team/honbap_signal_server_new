@@ -135,3 +135,21 @@ exports.matchSignal = async function (userIdx) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+// 시그널 상태 수정 12
+exports.patchSignalStatus = async function (userIdx) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const result = await signalDao.patchSignalStatus(
+      connection,
+      userIdx
+    );
+    connection.release();
+
+    return result[0];
+  } catch (err) {
+    logger.error(`getSignalList Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}
