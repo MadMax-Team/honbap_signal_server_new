@@ -13,13 +13,22 @@ signal table -  userIdx : User.userIdx
 */
 
 // 시그널 등록 *** 1 ***
-async function insertSignal(connection, params) {
+async function insertSignal(connection, params, params2) {
   const query = `
                   INSERT INTO Signaling
                   (userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, sigPromiseMenu, checkSigWrite)
                   VALUES (?, ?, ?, ?, ?, ?, ?);
                   `;
   const [row] = await connection.query(query, params);
+  console.log("row", row);
+
+  const query2 = `
+                    UPDATE User
+                    set fcm = ?
+                    WHERE userIdx = ?;
+                `;
+  const [row2] = await connection.query(query2, params2);
+  console.log("row2", row2);
 
   return row;
 }
@@ -58,7 +67,7 @@ async function getSignalInfo(connection, params) {
 }
 
 // 시그널 정보 수정 *** 4 ***
-async function updateSignal(connection, params) {
+async function updateSignal(connection, params, params2) {
   const query = `
                   UPDATE Signaling
                   SET sigPromiseTime = STR_TO_DATE(?, '%Y-%m-%d %H:%i:%s'), sigPromiseArea = ?, sigPromiseMenu = ?, updateAt = default
@@ -67,6 +76,14 @@ async function updateSignal(connection, params) {
                   `;
   const [row] = await connection.query(query, params);
 
+  const query2 = 
+              `
+                UPDATE User
+                SET fcm = ?
+                WHERE userIdx = ?;
+              `
+  const [row2] = await connection.query(query, params2);
+  
   return row;
 }
 

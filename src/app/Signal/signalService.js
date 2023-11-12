@@ -14,7 +14,7 @@ const { connect } = require("http2");
 
 
 // 시그널 등록 1
-exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromiseMenu, userIdx) {
+exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromiseMenu, fcm, userIdx) {
 
     let checkSigWrite = 1;
 
@@ -28,16 +28,26 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
     const connection = await pool.getConnection(async (conn) => conn);
     
     try {
-        const signalRows = [userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, sigPromiseMenu, checkSigWrite];
-        await connection.beginTransaction();
+         await connection.beginTransaction();
         
         //이미 시그널 값이 존재하면 time, area, menu update만 해줌
         const findMySignalResult = await signalDao.findMySignal(connection, userIdx);
         if (findMySignalResult.length > 0)
-            result = await signalDao.updateSignal(connection, signalRows);
-        else
-            result = await signalDao.insertSignal(connection, signalRows);
+        {
+            console.log("signal update");
 
+            const signalRows = [userIdx,sigPromiseTime, sigPromiseArea, sigPromiseMenu]
+            const fcmRows = [fcm, userIdx]
+            result = await signalDao.updateSignal(connection, signalRows, fcmRows);
+        }
+        else
+        {
+            console.log("signal insert");
+
+            const signalRows = [userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, sigPromiseMenu, checkSigWrite];
+            const fcmRows = [fcm, userIdx]
+            result = await signalDao.insertSignal(connection, signalRows, fcmRows);
+        }
         await connection.commit();
     
         return result;
@@ -145,6 +155,8 @@ exports.matching = async function (applyIdx, applyedIdx) {
 
          //시그널 신청자는 Signaling에서 삭제
         const result4 = await signalDao.signalOff(connection, applyIdx);
+
+        connection.release;
 
         return result;
     } catch (err) {
