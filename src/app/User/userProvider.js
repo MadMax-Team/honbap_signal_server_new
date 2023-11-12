@@ -152,3 +152,17 @@ exports.getKakaoId = async function (provider, id) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+exports.getFCM = async function (id) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const result = await userDao.selectFCM(connection, [id]);
+    connection.release();
+
+    return result;
+  } catch (err) {
+    logger.error(`FCM Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};
