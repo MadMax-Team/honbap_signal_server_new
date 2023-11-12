@@ -37,7 +37,7 @@ async function findMySignal(connection, userIdx) {
   const query = `
                     SELECT s.userIdx
                     FROM Signaling AS s
-                    WHERE s.userIdx = ? AND s.sigStatus = 1 AND s.sigMatchStatus = 0;
+                    WHERE s.userIdx = ? AND ((s.sigStatus = 1 AND s.sigMatchStatus = 0) OR (s.sigStatus = 0 AND s.sigMatchStatus = 0));
                     `;
   const [row] = await connection.query(query, userIdx);
   return row;   
