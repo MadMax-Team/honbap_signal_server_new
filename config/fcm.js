@@ -68,6 +68,7 @@ function buildIdxMessage(token, code, userIdx, nickName) {
 }
 
 function sendFcmMessage(token, FCMMessage){
+
     getAccessToken().then(function(accessToken) {
         const options = {
         hostname: HOST,

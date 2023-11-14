@@ -191,11 +191,15 @@ exports.postSigMatch = async function (req, res) {
   const createChat = await chatService.createChatRoom(userIdxFromJWT, matchIdx);
   console.log("here2")*/
 
-  // 매칭 fcmMessage 전송 필요
-  // 추후 token 값 변경 필요
- // const fcm = await userProvider.getFCM(userIdxFromJWT);
-  //if(fcm) sendFcmMessage(buildSignalMessage(fcm, "10000", applyIdx, "test", "test", "test"));
+  const fcm = await userProvider.getFCM(userIdxFromJWT);
+  const signalinfo = await signalProvider.getSignalInfo(userIdxFromJWT);
+  console.log("signalInfo", signalinfo);
+  console.log("fcm", fcm[0].fcm);
 
+  //fcm 전송
+  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", applyIdx.toString(), "test", "test", "test"));
+  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", applyedIdx.toString(), "test", "test", "test"));
+  
   return res.send(baseResponse.SUCCESS);
 };
 
