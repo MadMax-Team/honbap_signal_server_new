@@ -252,7 +252,19 @@ async function insertUsernull(connection,idx){
 
     return row;
 }
+//회원가입할때 위치 정보 널값 넣기
+async function insertLocationnull(connection,idx){
+    const query = `
+                INSERT INTO UserLocation
+                (userIdx)
+                VALUES (?);
+                `;
+    const [row] = await connection.query(query,idx);
 
+    return row;
+}
+
+// FCM 업데이트
 async function upateFCMById(connection,params){
     const query =`
                 UPDATE User
@@ -264,6 +276,7 @@ async function upateFCMById(connection,params){
     return row;
 }
 
+// FCM 조회
 async function selectFCM(connection, params) {
     const query = `
                 SELECT fcm
@@ -297,6 +310,7 @@ module.exports = {
     selectKakaoId, //15
     updateUserImage, // 16
     insertUsernull, //17
-    upateFCMById, // 18
-    selectFCM // 19
+    insertLocationnull, //18
+    upateFCMById, // 19
+    selectFCM // 20
   };

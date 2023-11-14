@@ -55,8 +55,11 @@ exports.createUsers = async function (email, password, userName, birth, phoneNum
 
         const userIdxRow = await userProvider.getUserIdx(email);
         //console.log(userIdxRow);
-        const insertUserProfilenull = await userDao.insertUsernull(connection,userIdxRow.userIdx);
-
+        if (userIdxRow){
+            const insertUserProfilenull = await userDao.insertUsernull(connection,userIdxRow.userIdx);
+            const insertUserLocationnull = await userDao.insertLocationnull(connection,userIdxRow.userIdx);
+        }
+        
         connection.release();
         return response(baseResponse.SUCCESS);
 
