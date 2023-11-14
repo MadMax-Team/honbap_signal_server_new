@@ -8,65 +8,33 @@ const haversine = require('haversine');
 
 exports.getSignalList = async function (userIdx) 
 {
-  try 
-  {
     const connection = await pool.getConnection(async (conn) => conn);
-    const params = [userIdx, userIdx, userIdx];
-
-    const signalOnUserIdxList = await findDao.getSignalOnUser(connection, params);
-
-    if(!signalOnUserIdxList) return signalOnUserIdxList;
-
-    const loginUserLocation = await findDao.getLocation(connection, userIdx);
+    // const params = [userIdx, userIdx, userIdx];
+    const myLocation = await findDao.getLocation(connection, userIdx);
+    let signalOnUserList = await findDao.getSignalOnUsers(connection);
+    if(!signalOnUserList) return signalOnList;
+    signalOnUserList = Array.from(new Set(signalOnUserList.map(item => item.userIdx))).map(userIdx => {
+      return signalOnUserList.find(obj => obj.userIdx === userIdx);
+    }); // 중복 제거
     
-    
-    const nearSignalOnList = [];
+    const nearUsers = [];
 
-    for(var i=0; i < signalOnUserIdxList.length; i++)
-    {
-      logger.info("--------------------------------");
-      let signalOnUserLocation  = await findDao.getLocation(connection, signalOnUserIdxList[i].userIdx); 
+    signalOnUserList.forEach(signalOnUser => {
+
+      const distance = haversine(myLocation[0], {latitude: signalOnUser.latitude, longitude: signalOnUser.longitude}, { unit: 'km' });
       
-      logger.info(signalOnUserIdxList[i].userIdx);
-      logger.info(signalOnUserLocation[0].latitude);
-      logger.info(signalOnUserLocation[0].longitude);
-      
-      let loginUserAndSignalOnUserDistance = haversine(loginUserLocation[0], signalOnUserLocation[0]);
-      
-      if(loginUserAndSignalOnUserDistance < 10 )
-      {
-        if(signalOnUserIdxList[i].userIdx != userIdx)
-        {
-          let nearSignalOnUserList = {};
-          nearSignalOnUserList.userIdx = signalOnUserIdxList[i].userIdx;
-          nearSignalOnUserList.checkSigWrite = signalOnUserIdxList[i].checkSigWrite;
-          nearSignalOnUserList.userName = signalOnUserIdxList[i].userName;
-          nearSignalOnUserList.userIntroduce = signalOnUserIdxList[i].userIntroduce;
-          nearSignalOnUserList.taste = signalOnUserIdxList[i].taste;
-          nearSignalOnUserList.hatefood = signalOnUserIdxList[i].hatefood;
-          nearSignalOnUserList.interest = signalOnUserIdxList[i].interest;
-          nearSignalOnUserList.avgSpeed = signalOnUserIdxList[i].avgSpeed;
-          nearSignalOnUserList.preferArea = signalOnUserIdxList[i].preferArea;
-          nearSignalOnUserList.mbti = signalOnUserIdxList[i].mbti;
-          nearSignalOnUserList.updateAt = signalOnUserIdxList[i].updateAt;
-          nearSignalOnUserList.sigPromiseArea = signalOnUserIdxList[i].sigPromiseArea;
-          nearSignalOnUserList.sigPromiseTime = signalOnUserIdxList[i].sigPromiseTime;
-          nearSignalOnUserList.distance = loginUserAndSignalOnUserDistance;
-          nearSignalOnList.push(nearSignalOnUserList);
-        }
+      if (distance <= 10) {
+        
+        const userWithDistance = {
+          ...signalOnUser,
+          distance: distance  // 거리 정보 추가
+        };
+        nearUsers.push(userWithDistance);
+        logger.info(JSON.stringify(nearUsers));
       }
-      else if(loginUserAndSignalOnUserDistance > 10)
-      {
-        logger.info("10km 거리에서 벗어난 시그널 입니다.");
-        logger.info("--------------------------------");
-      }      
-    }
-    logger.info(nearSignalOnList);
+    });
+
     connection.release();
     
-    return nearSignalOnList;
-  } catch (err) {
-    logger.error(`findProvider error\n: ${err.message}`);
-    return errResponse(baseResponse.DB_ERROR);
-  }
+    return nearUsers;
 }

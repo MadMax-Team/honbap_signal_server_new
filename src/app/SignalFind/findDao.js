@@ -22,7 +22,7 @@ async function updateLocation(connection, params) {
 
 async function getLocation(connection, userIdx) {
   const query = `
-                  SELECT *
+                  SELECT latitude, longitude
                   FROM UserLocation
                   WHERE userIdx = ?;
                 `;
@@ -31,15 +31,16 @@ async function getLocation(connection, userIdx) {
   return row;
 }
 
-async function getSignalOnUser(connection, params){
+async function getSignalOnUsers(connection){
   const query = `
-                  SELECT u.*, up.*, s.signalIdx, s.sigPromiseArea, s.sigPromiseTime, s.checkSigWrite, s.sigPromiseMenu
+                  SELECT u.*, up.*, s.signalIdx, s.sigPromiseArea, s.sigPromiseTime, s.checkSigWrite, s.sigPromiseMenu, ul.latitude, ul.longitude
                   FROM Signaling AS s
                           LEFT JOIN User AS u ON s.userIdx = u.userIdx
                           LEFT JOIN UserProfile AS up ON s.userIdx = up.userIdx
-                  WHERE s.sigStatus = 1;
+                          LEFT JOIN UserLocation As ul ON s.userIdx = ul.userIdx
+                  WHERE s.sigStatus = 1
                 `;
-  const [row] = await connection.query(query, params);
+  const [row] = await connection.query(query);
   return row ;
 }
 
@@ -48,5 +49,5 @@ module.exports = {
   insertUserLocation,
   updateLocation, 
   getLocation, 
-  getSignalOnUser
+  getSignalOnUsers
 };
