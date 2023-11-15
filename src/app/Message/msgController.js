@@ -44,7 +44,7 @@ exports.sendMsg = async function (req, res) {
   if(!msg) {
     return res.send(response(baseResponse.MSG_TEXT_EMPTY));
   }
-  if(msg > 500) {
+  if(msg.length > 500) {
     return res.send(response(baseResponse.MSG_TEXT_OVER));
   }
 
