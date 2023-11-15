@@ -17,7 +17,10 @@ async function getMsgRoom(connection, params) {
                     SELECT  MM.roomId , MM.msg as lastMessage , MM.sendAt as lastSendedAt , u.nickName , u.profileImg 
                     FROM Message AS MM
                         RIGHT JOIN MessageRoom AS m ON m.roomId = MM.roomId  AND (userIdx = ? OR matchIdx=?)
-                        LEFT JOIN UserProfile As u ON u.userIdx = MM.senderIdx  
+                        LEFT JOIN UserProfile As u ON u.userIdx = (CASE
+                            WHEN m.userIdx = ? THEN m.matchIdx
+                            WHEN m.userIdx != ? THEN m.userIdx
+                        END)
                     WHERE (MM.roomId,MM.sendAt) in (select roomId,MAX(sendAt) from Message group by roomId)
                     ORDER BY MM.sendAt DESC 
                     

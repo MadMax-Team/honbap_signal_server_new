@@ -8,7 +8,7 @@ const msgDao = require("./msgDao");
 // 쪽지 방 확인
 exports.getMsgRoom = async function (userIdx) {
     try {
-        const params = [userIdx, userIdx,userIdx];
+        const params = [userIdx,userIdx,userIdx,userIdx];
         const connection = await pool.getConnection(async (conn) => conn);
         const getMsgRoomResult = await msgDao.getMsgRoom(connection, params);
         connection.release();
