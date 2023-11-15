@@ -26,7 +26,6 @@ exports.getMsgRoom = async function (req, res) {
   const userIdx = req.verifiedToken.userIdx;
 
   const result = await msgProvider.getMsgRoom(userIdx);
-  console.log("test");
 
   return res.send(response(baseResponse.SUCCESS, result));
 }
