@@ -15,9 +15,9 @@ async function createMsgRoom(connection, params) {
 async function getMsgRoom(connection, params) {
     const query =   `
                     SELECT  MM.roomId , MM.msg as lastMessage , MM.sendAt as lastSendedAt , u.nickName , u.profileImg 
-                    FROM Message AS MM 
-                        LEFT JOIN MessageRoom AS m ON m.roomId = MM.roomId  AND (userIdx = ? OR matchIdx=?)
-                        LEFT JOIN UserProfile As u ON u.userIdx = MM.senderIdx
+                    FROM Message AS MM
+                        RIGHT JOIN MessageRoom AS m ON m.roomId = MM.roomId  AND (userIdx = ? OR matchIdx=?)
+                        LEFT JOIN UserProfile As u ON u.userIdx = MM.senderIdx  
                     WHERE (MM.roomId,MM.sendAt) in (select roomId,MAX(sendAt) from Message group by roomId)
                     ORDER BY MM.sendAt DESC 
                     
