@@ -11,7 +11,8 @@ const { response, errResponse } = require("../../../config/response");
 const logger = require("../../../config/winston");
 const crypto = require("crypto");
 const regexEmail = require("regex-email");
-const {sendFcmMessage, buildSignalMessage} = require("../../../config/fcm.js")
+const {sendFcmMessage, buildSignalMessage,buildAlarmMessage} = require("../../../config/fcm.js")
+const {buildIdxMessage} = require("../../../config/fcm.js");
 //controller : 판단 부분.
 
 /**
@@ -22,7 +23,7 @@ const {sendFcmMessage, buildSignalMessage} = require("../../../config/fcm.js")
 exports.postSignal = async function (req, res) {
   const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, fcm, latitude, longitude} = req.body;
   const userIdx = req.verifiedToken.userIdx;
-  
+
     // 빈 값 체크
     if(!latitude)
       return res.send(baseResponse.SIGNALFIND_LATITUDE_EMPTY);
@@ -31,13 +32,13 @@ exports.postSignal = async function (req, res) {
       return res.send(baseResponse.SIGNALFIND_LONGITUDE_EMPTY);
 
     if(!userIdx)
-    return res.send(baseResponse.SIGNALFIND_USERIDX_EMPTY); 
+    return res.send(baseResponse.SIGNALFIND_USERIDX_EMPTY);
 
 
   const result = await signalService.createSignal(
-    sigPromiseTime, 
-    sigPromiseArea, 
-    sigPromiseMenu, 
+    sigPromiseTime,
+    sigPromiseArea,
+    sigPromiseMenu,
     fcm,
     userIdx
   );
@@ -113,6 +114,16 @@ exports.postSignalApply = async function (req, res) {
   console.log(req.body)
   const apply = await signalService.signalApply(userIdx, applyedIdx, userIdxFromJWT);
 
+  const fcm_user = await userProvider.getFCM(userIdxFromJWT);
+  console.log("fcm",fcm_user[0].fcm);
+
+  const fcm_apply_user = await userProvider.getFCM(applyedIdx);
+
+
+  if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildIdxMessage(fcm_user[0].fcm,"10000",userIdxFromJWT.toString()));
+  if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildAlarmMessage(fcm_apply_user[0].fcm,"10000"));
+
+  console.log("test");
   return res.send(baseResponse.SUCCESS);
 };
 
@@ -198,7 +209,7 @@ exports.postSigMatch = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const { applyIdx } = req.body;
 
-  //user = applyedIdx: 시그널 수락자 
+  //user = applyedIdx: 시그널 수락자
   //apply = applyIdx : 시그널 전송자
   const matchingInfo = await signalService.matching(applyIdx, userIdxFromJWT);
 
