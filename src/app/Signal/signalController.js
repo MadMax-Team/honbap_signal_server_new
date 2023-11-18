@@ -5,6 +5,7 @@ const signalProvider = require("../../app/Signal/signalProvider");
 const signalService = require("../../app/Signal/signalService");
 const chatService = require("../../app/Chat/chatService");
 const userProvider = require("../User/userProvider");
+const findService = require("../../app/SignalFind/findService.js");
 
 const { response, errResponse } = require("../../../config/response");
 const logger = require("../../../config/winston");
@@ -19,9 +20,20 @@ const {sendFcmMessage, buildSignalMessage} = require("../../../config/fcm.js")
  * [POST] /signal/list
  */
 exports.postSignal = async function (req, res) {
-  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, fcm} = req.body;
+  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, fcm, latitude, longitude} = req.body;
   const userIdx = req.verifiedToken.userIdx;
   
+    // 빈 값 체크
+    if(!latitude)
+      return res.send(baseResponse.SIGNALFIND_LATITUDE_EMPTY);
+
+    if(!longitude)
+      return res.send(baseResponse.SIGNALFIND_LONGITUDE_EMPTY);
+
+    if(!userIdx)
+    return res.send(baseResponse.SIGNALFIND_USERIDX_EMPTY); 
+
+
   const result = await signalService.createSignal(
     sigPromiseTime, 
     sigPromiseArea, 
@@ -29,6 +41,10 @@ exports.postSignal = async function (req, res) {
     fcm,
     userIdx
   );
+
+  const params = [latitude, longitude, userIdx]
+  const result2 = await findService.updateLocation(params);
+
 
   return res.send(baseResponse.SUCCESS);
 };
