@@ -234,6 +234,17 @@ async function patchSignalStatus(connection, userIdx) {
   return row;
 }
 
+// 시그널 매칭 후 저장  *** 14 ***
+async function patchSignalSave(connection, userIdx) {
+  const query = `
+                    UPDATE Signaling
+                    SET sigStatus = 1
+                    WHERE userIdx = ? AND sigStatus = 0 AND sigMatchStatus = 1; 
+  `
+  const [row] = await connection.query(query, userIdx);
+  return row;
+}
+
 module.exports = {
   insertSignal, // 1
   findMySignal,
@@ -252,5 +263,6 @@ module.exports = {
   modifySignalContents, //15
   getInfoFromNickName, //16
   matchSignal,
-  patchSignalStatus
+  patchSignalStatus,
+  patchSignalSave
 };
