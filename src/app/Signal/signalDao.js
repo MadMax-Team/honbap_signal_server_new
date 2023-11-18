@@ -44,13 +44,13 @@ async function findMySignal(connection, userIdx) {
 }
 
 // 시그널 상태 조회 *** 2 ***
-async function getSignalStatus(connection, userIdx) {
+async function getSignalStatus(connection, params) {
   const query = `
-                    SELECT s.sigStatus, s.sigMatchStatus
-                    FROM Signaling AS s
-                    WHERE s.userIdx = ? AND s.sigMatchStatus = 0; 
+      SELECT *
+      FROM Signaling AS s
+      WHERE NOT (s.sigStatus = 1 AND s.sigMatchStatus = 1) AND (s.userIdx = ? OR s.applyedIdx = ?);
   `
-  const [row] = await connection.query(query, userIdx);
+  const [row] = await connection.query(query, params);
   return row;
 }
 
@@ -81,7 +81,7 @@ async function updateSignal(connection, params, params2) {
                 SET fcm = ?
                 WHERE userIdx = ?;
               `
-  const [row2] = await connection.query(query, params2);
+  const [row2] = await connection.query(query2, params2);
   
   return row;
 }
@@ -211,13 +211,10 @@ async function updateSigMatch(connection, params) {
 
 async function matchSignal(connection, params) {
   const query = `
-                  SELECT *
-                  FROM Signaling AS s
-                  WHERE userIdx = (
-                      SELECT s.applyedIdx
-                      FROM Signaling AS s
-                      WHERE s.userIdx= ? 
-                      AND s.sigStatus = 0 AND s.sigMatchStatus = 1) ;
+                    SELECT *
+                    FROM Signaling AS s
+                    WHERE (s.userIdx = ? OR s.applyedIdx = ?) 
+                    AND s.sigStatus = 0 AND s.sigMatchStatus = 1
                     `;
   const [row] = await connection.query(query, params);
   return row;
