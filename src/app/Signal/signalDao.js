@@ -53,16 +53,20 @@ async function getSignalStatus(connection, params) {
   `
   const [row] = await connection.query(query, params);
 
-  console.log("1", row[0].userIdx, params[0]);
+  const query2 = `
+  SELECT u.userName
+  FROM User AS u
+  WHERE u.userIdx = ?;
+  `
 
-  if (row[0].applyedIdx == params[0])
+  if (row[0].userIdx == params[0])
   {
-    const query2 = `
-    SELECT u.userName
-    FROM User AS u
-    WHERE u.userIdx = ?;
-    `
     const [row2] = await connection.query(query2, row[0].applyedIdx);
+    row[0].userName = row2[0].userName;
+  }
+  else if (row[0].applyedIdx == params[0])
+  {
+    const [row2] = await connection.query(query2, row[0].userIdx);
     row[0].userName = row2[0].userName;
   }
 
