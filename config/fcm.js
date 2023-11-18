@@ -1,7 +1,7 @@
 const https = require('https');
 const { google } = require('googleapis');
 
- 
+
 const PROJECT_ID = "honbab-signal";
 const HOST = 'fcm.googleapis.com';
 const PATH = '/v1/projects/' + PROJECT_ID + '/messages:send';
@@ -28,6 +28,9 @@ function getAccessToken() {
   });
 }
 
+
+
+
 //10001, 11001
 function buildSignalMessage(token, code, userIdx, nickName, sigPromiseArea, sigPromiseTime, sigPromiseFood){
     return {
@@ -43,10 +46,10 @@ function buildSignalMessage(token, code, userIdx, nickName, sigPromiseArea, sigP
                 "nickName": nickName,
                 "sigPromiseArea": sigPromiseArea,
                 "sigPromiseTime": sigPromiseTime,
-                "sigPromiseFood": sigPromiseTime
+                "sigPromiseFood": sigPromiseFood
             }
         }
-    };  
+    };
 }
 
 //10002
@@ -64,7 +67,20 @@ function buildIdxMessage(token, code, userIdx, nickName) {
                 "nickName": nickName,
             }
         }
-    };  
+    };
+}
+
+function buildAlarmMessage(token,code){
+    return {
+        "message": {
+            "token": token,
+            "notification":{
+            },
+            "data": {
+                "code": code,
+            }
+        }
+    };
 }
 
 function sendFcmMessage(token, FCMMessage){
@@ -100,4 +116,4 @@ function sendFcmMessage(token, FCMMessage){
     });
 }
 
-module.exports = { sendFcmMessage, buildSignalMessage, buildIdxMessage };
+module.exports = { sendFcmMessage, buildSignalMessage, buildIdxMessage, buildAlarmMessage };
