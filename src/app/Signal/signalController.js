@@ -198,7 +198,7 @@ exports.postSigMatch = async function (req, res) {
 
   //fcm 전송
   if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", applyIdx.toString(), "test", "test", "test"));
-  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", applyedIdx.toString(), "test", "test", "test"));
+  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", userIdxFromJWT.toString(), "test", "test", "test"));
   
   return res.send(baseResponse.SUCCESS);
 };
