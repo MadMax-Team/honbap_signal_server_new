@@ -9,10 +9,11 @@ const signalDao = require("./signalDao");
 exports.getSignalStatus = async function (userIdx) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
+    params = [userIdx, userIdx, userIdx];
 
     const userIdxCheckResult = await signalDao.getSignalStatus(
       connection,
-      userIdx
+      params
     );
     connection.release();
 
@@ -120,7 +121,7 @@ exports.getInfoFromNickName = async function (nickName) {
   }
 }
 
-// 로그인한 유저들의 signalIdx
+// match info
 exports.matchSignal = async function (userIdx) {
   try {
     const params = [userIdx];
@@ -129,7 +130,7 @@ exports.matchSignal = async function (userIdx) {
     const matchSignalResult = await signalDao.matchSignal(connection, params);
     connection.release();
 
-    return matchSignalResult;
+    return matchSignalResult[0];
   } catch (err) {
     logger.error(`matchSignal Provider error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
@@ -149,7 +150,26 @@ exports.patchSignalStatus = async function (userIdx) {
 
     return result[0];
   } catch (err) {
-    logger.error(`getSignalList Provider error\n: ${err.message}`);
+    logger.error(`patchSignalStatus Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}
+
+
+// 시그널 매칭 후 저장 14
+exports.patchSignalSave = async function (userIdx) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const result = await signalDao.patchSignalSave(
+      connection,
+      userIdx
+    );
+    connection.release();
+
+    return result[0];
+  } catch (err) {
+    logger.error(`patchSignalSave Provider error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   }
 }

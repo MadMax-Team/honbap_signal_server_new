@@ -42,4 +42,7 @@ module.exports = function (app) {
     // 내 시그널 ID 조회 13
     app.get("/mysignal", jwtMiddleware, signal.getMySignal);
 
+    // 시그널 매칭 완료 후 종료 14
+    app.patch("/signal/save", jwtMiddleware, signal.patchSignalSave);
+
 };

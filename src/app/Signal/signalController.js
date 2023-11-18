@@ -5,6 +5,7 @@ const signalProvider = require("../../app/Signal/signalProvider");
 const signalService = require("../../app/Signal/signalService");
 const chatService = require("../../app/Chat/chatService");
 const userProvider = require("../User/userProvider");
+const findService = require("../../app/SignalFind/findService.js");
 
 const { response, errResponse } = require("../../../config/response");
 const logger = require("../../../config/winston");
@@ -19,9 +20,20 @@ const {sendFcmMessage, buildSignalMessage} = require("../../../config/fcm.js")
  * [POST] /signal/list
  */
 exports.postSignal = async function (req, res) {
-  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, fcm} = req.body;
+  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu, fcm, latitude, longitude} = req.body;
   const userIdx = req.verifiedToken.userIdx;
   
+    // 빈 값 체크
+    if(!latitude)
+      return res.send(baseResponse.SIGNALFIND_LATITUDE_EMPTY);
+
+    if(!longitude)
+      return res.send(baseResponse.SIGNALFIND_LONGITUDE_EMPTY);
+
+    if(!userIdx)
+    return res.send(baseResponse.SIGNALFIND_USERIDX_EMPTY); 
+
+
   const result = await signalService.createSignal(
     sigPromiseTime, 
     sigPromiseArea, 
@@ -29,6 +41,10 @@ exports.postSignal = async function (req, res) {
     fcm,
     userIdx
   );
+
+  const params = [latitude, longitude, userIdx]
+  const result2 = await findService.updateLocation(params);
+
 
   return res.send(baseResponse.SUCCESS);
 };
@@ -41,6 +57,7 @@ exports.postSignal = async function (req, res) {
 exports.getSignalStatus = async function (req, res){
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const result = await signalProvider.getSignalStatus(userIdxFromJWT);
+
   return res.send(response(baseResponse.SUCCESS, result))
 };
 
@@ -194,11 +211,13 @@ exports.postSigMatch = async function (req, res) {
   const fcm = await userProvider.getFCM(userIdxFromJWT);
   const signalinfo = await signalProvider.getSignalInfo(userIdxFromJWT);
   console.log("signalInfo", signalinfo);
-  console.log("fcm", fcm[0].fcm);
+
+  const fcm2 = await userProvider.getFCM(applyIdx);
+  const signalinfo2 = await signalProvider.getSignalInfo(applyIdx);
 
   //fcm 전송
-  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", applyIdx.toString(), "test", "test", "test"));
-  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", applyedIdx.toString(), "test", "test", "test"));
+  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm2[0].fcm, "10000", applyIdx.toString(), "test", "test", "test"));
+  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", userIdxFromJWT.toString(), "test", "test", "test"));
   
   return res.send(baseResponse.SUCCESS);
 };
@@ -222,5 +241,16 @@ exports.getMatchInfo = async function (req, res) {
 exports.patchSignalStatus = async function (req, res){
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const result = await signalProvider.patchSignalStatus(userIdxFromJWT);
+  return res.send(response(baseResponse.SUCCESS, result))
+};
+
+/**
+ * API No. 14
+ * API Name : 시그널 매칭 완료 후 종료
+ * [PATCH] /signal/save
+ */
+exports.patchSignalSave = async function (req, res){
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  const result = await signalProvider.patchSignalSave(userIdxFromJWT);
   return res.send(response(baseResponse.SUCCESS, result))
 };
