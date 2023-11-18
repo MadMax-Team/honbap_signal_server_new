@@ -58,7 +58,7 @@ exports.getSignalStatus = async function (req, res){
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const result = await signalProvider.getSignalStatus(userIdxFromJWT);
 
-  return res.send(response(baseResponse.SUCCESS, result, userIdxInfoResponse))
+  return res.send(response(baseResponse.SUCCESS, result))
 };
 
 /**

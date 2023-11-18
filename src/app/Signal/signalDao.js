@@ -46,7 +46,7 @@ async function findMySignal(connection, userIdx) {
 // 시그널 상태 조회 *** 2 ***
 async function getSignalStatus(connection, params) {
   const query = `
-      SELECT *
+      SELECT s.*, u.userName
       FROM Signaling AS s, User AS u
       WHERE NOT (s.sigStatus = 1 AND s.sigMatchStatus = 1) 
       AND (s.userIdx = ? OR s.applyedIdx = ?) AND u.userIdx = ?;
