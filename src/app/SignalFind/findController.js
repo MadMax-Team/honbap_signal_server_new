@@ -70,7 +70,6 @@ exports.postMyLocation = async function (req, res) {
 
     // const params = [userIdx];
     const signalListResponse = await findProvider.getSignalList(userIdx);
-    logger.info(signalListResponse);
 
     return res.send(response(baseResponse.SUCCESS, signalListResponse));
   }
