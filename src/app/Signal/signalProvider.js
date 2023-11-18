@@ -149,7 +149,26 @@ exports.patchSignalStatus = async function (userIdx) {
 
     return result[0];
   } catch (err) {
-    logger.error(`getSignalList Provider error\n: ${err.message}`);
+    logger.error(`patchSignalStatus Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}
+
+
+// 시그널 매칭 후 저장 14
+exports.patchSignalSave = async function (userIdx) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const result = await signalDao.patchSignalSave(
+      connection,
+      userIdx
+    );
+    connection.release();
+
+    return result[0];
+  } catch (err) {
+    logger.error(`patchSignalSave Provider error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   }
 }

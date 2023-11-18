@@ -240,3 +240,14 @@ exports.patchSignalStatus = async function (req, res){
   const result = await signalProvider.patchSignalStatus(userIdxFromJWT);
   return res.send(response(baseResponse.SUCCESS, result))
 };
+
+/**
+ * API No. 14
+ * API Name : 시그널 매칭 완료 후 종료
+ * [PATCH] /signal/save
+ */
+exports.patchSignalSave = async function (req, res){
+  const userIdxFromJWT = req.verifiedToken.userIdx;
+  const result = await signalProvider.patchSignalSave(userIdxFromJWT);
+  return res.send(response(baseResponse.SUCCESS, result))
+};
