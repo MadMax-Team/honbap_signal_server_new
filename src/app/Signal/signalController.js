@@ -123,6 +123,7 @@ exports.postSignalApply = async function (req, res) {
   if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildIdxMessage(fcm_user[0].fcm,"10000",userIdxFromJWT.toString()));
   if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildAlarmMessage(fcm_apply_user[0].fcm,"10000"));
 
+  console.log("test");
   return res.send(baseResponse.SUCCESS);
 };
 
