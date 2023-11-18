@@ -84,6 +84,18 @@ async function getSignalInfo(connection, params) {
   return row;             
 }
 
+// 시그널 매칭 조회 *** 3 ***
+async function getMatchInfo(connection, params) {
+  const query = `
+                  SELECT s.sigPromiseTime, s.sigPromiseArea, s.sigPromiseMenu
+                  FROM Signaling AS s
+                  WHERE s.userIdx = ? AND s.sigStatus = 0 AND s.sigMatchStatus = 1;
+                `;
+  const [row] = await connection.query(query, params);
+
+  return row;             
+}
+
 // 시그널 정보 수정 *** 4 ***
 async function updateSignal(connection, params, params2) {
   const query = `
@@ -264,6 +276,7 @@ module.exports = {
   insertSignal, // 1
   findMySignal,
   getSignalStatus, // 2
+  getMatchInfo,
   getSignalInfo, //3
   updateSignal, // 4
   updateSigMatch, //
