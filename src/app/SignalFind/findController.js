@@ -53,7 +53,7 @@ exports.postMyLocation = async function (req, res) {
     const params = [latitude, longitude, userIdx]
     const result = await findService.updateLocation(params);
 
-    return res.send(baseResponse.SUCCESS, result[0]);
+    return res.send(response(baseResponse.SUCCESS, result[0]));
   }
 /**
  * API No. 3
