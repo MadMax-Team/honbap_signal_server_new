@@ -46,11 +46,30 @@ async function findMySignal(connection, userIdx) {
 // 시그널 상태 조회 *** 2 ***
 async function getSignalStatus(connection, params) {
   const query = `
-      SELECT *
-      FROM Signaling AS s
-      WHERE NOT (s.sigStatus = 1 AND s.sigMatchStatus = 1) AND (s.userIdx = ? OR s.applyedIdx = ?);
+      SELECT s.*, u.userName
+      FROM Signaling AS s, User AS u
+      WHERE NOT (s.sigStatus = 1 AND s.sigMatchStatus = 1) 
+      AND (s.userIdx = ? OR s.applyedIdx = ?) AND u.userIdx = ?;
   `
   const [row] = await connection.query(query, params);
+
+  const query2 = `
+  SELECT u.userName
+  FROM User AS u
+  WHERE u.userIdx = ?;
+  `
+
+  if (row[0].userIdx == params[0])
+  {
+    const [row2] = await connection.query(query2, row[0].applyedIdx);
+    row[0].userName = row2[0].userName;
+  }
+  else if (row[0].applyedIdx == params[0])
+  {
+    const [row2] = await connection.query(query2, row[0].userIdx);
+    row[0].userName = row2[0].userName;
+  }
+
   return row;
 }
 

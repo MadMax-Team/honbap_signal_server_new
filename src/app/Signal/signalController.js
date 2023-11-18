@@ -58,6 +58,7 @@ exports.postSignal = async function (req, res) {
 exports.getSignalStatus = async function (req, res){
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const result = await signalProvider.getSignalStatus(userIdxFromJWT);
+
   return res.send(response(baseResponse.SUCCESS, result))
 };
 
@@ -220,10 +221,12 @@ exports.postSigMatch = async function (req, res) {
   const fcm = await userProvider.getFCM(userIdxFromJWT);
   const signalinfo = await signalProvider.getSignalInfo(userIdxFromJWT);
   console.log("signalInfo", signalinfo);
-  console.log("fcm", fcm[0].fcm);
+
+  const fcm2 = await userProvider.getFCM(applyIdx);
+  const signalinfo2 = await signalProvider.getSignalInfo(applyIdx);
 
   //fcm 전송
-  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", applyIdx.toString(), "test", "test", "test"));
+  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm2[0].fcm, "10000", applyIdx.toString(), "test", "test", "test"));
   if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", userIdxFromJWT.toString(), "test", "test", "test"));
 
   return res.send(baseResponse.SUCCESS);

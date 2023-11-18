@@ -9,7 +9,7 @@ const signalDao = require("./signalDao");
 exports.getSignalStatus = async function (userIdx) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
-    params = [userIdx, userIdx];
+    params = [userIdx, userIdx, userIdx];
 
     const userIdxCheckResult = await signalDao.getSignalStatus(
       connection,
