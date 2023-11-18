@@ -32,6 +32,7 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
         
         //이미 시그널 값이 존재하면 time, area, menu update만 해줌
         const findMySignalResult = await signalDao.findMySignal(connection, userIdx);
+        console.log("시그널 존재: ", findMySignalResult.length);
         if (findMySignalResult.length > 0)
         {
             console.log("signal update");
