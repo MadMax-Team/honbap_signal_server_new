@@ -39,7 +39,7 @@ exports.getSignalInfo = async function (userIdx) {
     );
     connection.release();
 
-    return signalInfoCheckResult[0];
+    return signalInfoCheckResult;
   } catch (err) {
     logger.error(`getSignalInfo Provider error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
