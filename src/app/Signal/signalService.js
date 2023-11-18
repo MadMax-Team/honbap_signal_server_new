@@ -11,6 +11,7 @@ const { errResponse } = require("../../../config/response");
 
 const jwt = require("jsonwebtoken");
 const { connect } = require("http2");
+const {user} = require("oracledb/examples/dbconfig");
 
 
 // 시그널 등록 1
@@ -26,10 +27,10 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
     let sigMatchStatus = 0;
 
     const connection = await pool.getConnection(async (conn) => conn);
-    
+
     try {
          await connection.beginTransaction();
-        
+
         //이미 시그널 값이 존재하면 time, area, menu update만 해줌
         const findMySignalResult = await signalDao.findMySignal(connection, userIdx);
         console.log("시그널 존재: ", findMySignalResult.length);
@@ -50,7 +51,7 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
             result = await signalDao.insertSignal(connection, signalRows, fcmRows);
         }
         await connection.commit();
-    
+
         return result;
     } catch (err) {
         await connection.rollback();
@@ -110,8 +111,10 @@ exports.signalApply = async function (userIdx, applyedIdx) {
 exports.cancelSignalApply = async function (applyedIdx, userIdx) {
     try {
         const params = [userIdx,applyedIdx];
+        const params2 = [applyedIdx,userIdx];
         const connection = await pool.getConnection(async (conn) => conn);
         const result = await signalDao.cancelSignalApply(connection, params);
+        const result2 = await signalDao.cancelSignalApply(connection,params2);
         connection.release;
         return result;
     } catch (err) {
@@ -140,7 +143,7 @@ exports.matching = async function (applyIdx, applyedIdx) {
     const connection = await pool.getConnection(async (conn) => conn);
     try {
 
-        //user = applyedIdx: 시그널 수락자 
+        //user = applyedIdx: 시그널 수락자
         //apply = applyIdx : 시그널 신청자
 
         //시그널 수락자, 신청자 둘다 signalApply table에서 전부 삭제
@@ -149,7 +152,7 @@ exports.matching = async function (applyIdx, applyedIdx) {
 
         //수락자 정보가 없으면 신청자 정보로 대체
 
-        //시그널 수락자의 signal상태 sigStatus = 0, sigMatchStatus = 1로 변경 후 
+        //시그널 수락자의 signal상태 sigStatus = 0, sigMatchStatus = 1로 변경 후
         //applyedIdx 입력
         params = [applyIdx, applyedIdx]
         const result3 = await signalDao.updateSigMatch(connection, params);

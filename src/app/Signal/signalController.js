@@ -119,11 +119,9 @@ exports.postSignalApply = async function (req, res) {
 
   const fcm_apply_user = await userProvider.getFCM(applyedIdx);
 
-
   if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildIdxMessage(fcm_user[0].fcm,"10000",userIdxFromJWT.toString()));
   if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildAlarmMessage(fcm_apply_user[0].fcm,"10000"));
 
-  console.log("test");
   return res.send(baseResponse.SUCCESS);
 };
 
@@ -164,6 +162,13 @@ exports.cancelSignalApply = async function (req, res) {
     applyedIdx,
     userIdxFromJWT
   );
+
+  const fcm_user = await userProvider.getFCM(userIdxFromJWT);
+  const fcm_apply_user = await userProvider.getFCM(applyedIdx);
+
+  if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildIdxMessage(fcm_user[0].fcm,"10000",userIdxFromJWT.toString()));
+  if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildIdxMessage(fcm_apply_user[0].fcm,"10000",applyedIdx.toString()));
+
   return res.send(baseResponse.SUCCESS);
 };
 
