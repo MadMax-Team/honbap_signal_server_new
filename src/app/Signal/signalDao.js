@@ -202,7 +202,7 @@ async function updateSigMatch(connection, params) {
   const query =   `
                   UPDATE Signaling
                   SET sigStatus = 0, sigMatchStatus = 1, applyedIdx = ?
-                  WHERE userIdx = ? AND sigStatus = 1, sigMatchStatus = 0;
+                  WHERE userIdx = ? AND sigStatus = 1 AND sigMatchStatus = 0;
                   `;
   const [row] = await connection.query(query, params);
 
