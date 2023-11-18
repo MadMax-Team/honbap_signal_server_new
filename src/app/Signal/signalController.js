@@ -220,16 +220,14 @@ exports.postSigMatch = async function (req, res) {
   console.log("here2")*/
 
   const fcm = await userProvider.getFCM(userIdxFromJWT);
-  const signalinfo = await signalProvider.getSignalInfo(userIdxFromJWT);
-  console.log("signalInfo", signalinfo);
+  const signalinfo = await signalProvider.getMatchInfo(userIdxFromJWT);
 
   const fcm2 = await userProvider.getFCM(applyIdx);
-  const signalinfo2 = await signalProvider.getSignalInfo(applyIdx);
 
   //fcm 전송
-  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm2[0].fcm, "10000", applyIdx.toString(), "test", "test", "test"));
-  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10000", userIdxFromJWT.toString(), "test", "test", "test"));
-
+  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm2[0].fcm, "10001", applyIdx.toString(), "test", signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
+  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10001", userIdxFromJWT.toString(), "test", signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
+  
   return res.send(baseResponse.SUCCESS);
 };
 

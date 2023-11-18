@@ -46,6 +46,24 @@ exports.getSignalInfo = async function (userIdx) {
   }  
 }
 
+// 시그널 매칭 정보 조회 4
+exports.getMatchInfo = async function (userIdx) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const signalInfoCheckResult = await signalDao.getMatchInfo(
+      connection,
+      userIdx
+    );
+    connection.release();
+
+    return signalInfoCheckResult;
+  } catch (err) {
+    logger.error(`getSignalInfo Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }  
+}
+
 // 시그널 신청 리스트 조회 (내가 보낸) 7
 exports.getSignalApply = async function (userIdx) {
   try {
