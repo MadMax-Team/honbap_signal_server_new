@@ -220,7 +220,7 @@ exports.postSigMatch = async function (req, res) {
   console.log("here2")*/
 
   const fcm = await userProvider.getFCM(userIdxFromJWT);
-  const signalinfo = await signalProvider.getMatchInfo(userIdxFromJWT);
+  const signalInfo = await signalProvider.getMatchInfo(userIdxFromJWT);
 
   const fcm2 = await userProvider.getFCM(applyIdx);
 
