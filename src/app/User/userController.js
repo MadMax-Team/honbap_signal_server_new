@@ -76,7 +76,7 @@ exports.signin = async function (req, res) {
 exports.postUsers = async function (req, res) {
   const { email, password, userName, birth, phoneNum, sex} = req.body;
   // email checking and print error message
-
+  console.log("test2")
   // 빈 값 체크
   if (!email) return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY));
   // 길이 체크
