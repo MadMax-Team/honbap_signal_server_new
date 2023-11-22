@@ -48,6 +48,8 @@ exports.sendMsg = async function (req, res) {
     return res.send(response(baseResponse.MSG_TEXT_OVER));
   }
 
+
+
   const result = await msgService.sendMsg(roomId, senderIdx, msg);
   return res.send(baseResponse.SUCCESS);
 }

@@ -32,7 +32,7 @@ function getAccessToken() {
 
 
 //10001, 11001
-function buildSignalMessage(token, code, userIdx, nickName, sigPromiseArea, sigPromiseTime, sigPromiseFood){
+function buildSignalMessage(token, code, userIdx, nickName, sigPromiseArea, sigPromiseTime, sigPromiseMenu){
     return {
         "message": {
             "token": token,
@@ -46,7 +46,7 @@ function buildSignalMessage(token, code, userIdx, nickName, sigPromiseArea, sigP
                 "nickName": nickName,
                 "sigPromiseArea": sigPromiseArea,
                 "sigPromiseTime": sigPromiseTime,
-                "sigPromiseFood": sigPromiseFood
+                "sigPromiseMenu": sigPromiseMenu
             }
         }
     };
@@ -82,6 +82,7 @@ function buildAlarmMessage(token,code){
         }
     };
 }
+
 
 function sendFcmMessage(token, FCMMessage){
 
