@@ -50,6 +50,7 @@
     "oracledb": "^6.0.3",
     "passport": "^0.6.0",
     "passport-kakao": "^1.0.1",
+    "pm2": "^5.3.0",
     "rand-token": "^1.0.1",
     "regex-email": "^1.0.2",
     "secret": "^1.2.0",
