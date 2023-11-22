@@ -111,12 +111,12 @@ exports.SigStatusOff = async function (req, res) {
  */
 exports.postSignalApply = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { userIdx, applyedIdx } = req.body;
+  const {userIdx, applyedIdx} = req.body;
   console.log(req.body)
   const apply = await signalService.signalApply(userIdx, applyedIdx, userIdxFromJWT);
 
   const fcm_user = await userProvider.getFCM(userIdxFromJWT);
-  console.log("fcm",fcm_user[0].fcm);
+  console.log("fcm", fcm_user[0].fcm);
 
   // const user_name = await userProvider.getUserProfile(userIdxFromJWT);
   // const apply_name = await userProvider.getUserProfile(applyedIdx);
@@ -126,8 +126,8 @@ exports.postSignalApply = async function (req, res) {
 
   const fcm_apply_user = await userProvider.getFCM(applyedIdx);
 
-  if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildIdxMessage(fcm_user[0].fcm,"10000",userIdxFromJWT.toString()));
-  if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildIdxMessage(fcm_apply_user[0].fcm,"10000",applyedIdx.toString()));
+  if (fcm_user) sendFcmMessage(fcm_user[0].fcm, buildIdxMessage(fcm_user[0].fcm, "10000", userIdxFromJWT.toString()));
+  if (fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm, buildIdxMessage(fcm_apply_user[0].fcm, "10000", applyedIdx.toString()));
 
   return res.send(baseResponse.SUCCESS);
 };
