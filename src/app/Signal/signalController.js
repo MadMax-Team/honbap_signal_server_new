@@ -222,6 +222,11 @@ exports.postSigMatch = async function (req, res) {
   const fcm = await userProvider.getFCM(userIdxFromJWT);
   const signalInfo = await signalProvider.getMatchInfo(userIdxFromJWT);
 
+  const user_name = await userProvider.getUserProfile(userIdxFromJWT);
+  const apply_name = await userProvider.getUserProfile(applyIdx);
+
+  console.log(user_name[0].nickName,apply_name[0].nickName);
+  
   const fcm2 = await userProvider.getFCM(applyIdx);
 
   //fcm 전송
