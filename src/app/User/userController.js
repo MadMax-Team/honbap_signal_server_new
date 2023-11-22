@@ -76,6 +76,7 @@ exports.signin = async function (req, res) {
 exports.postUsers = async function (req, res) {
   const { email, password, userName, birth, phoneNum, sex} = req.body;
   // email checking and print error message
+  console.log("test");
 
   // 빈 값 체크
   if (!email) return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY));
@@ -516,7 +517,7 @@ exports.verify = async function (req, res) {
   }
 };
 
-exports.updateFCM = async function (req, res) 
+exports.updateFCM = async function (req, res)
 {
   const fcm = req.body.fcm;
   const userIdxFromJwt = req.verifiedToken.userIdx;
@@ -532,7 +533,7 @@ exports.updateFCM = async function (req, res)
   // if(checkFCM){
   //   return res.send(response(baseResponse.SUCCESS, "already equal FCM"));
   // }
- 
+
   const fcmResponse = await userService.updateFCM(
     userIdx,
     fcm
