@@ -13,6 +13,7 @@ const crypto = require("crypto");
 const regexEmail = require("regex-email");
 const {sendFcmMessage, buildSignalMessage,buildAlarmMessage} = require("../../../config/fcm.js")
 const {buildIdxMessage} = require("../../../config/fcm.js");
+const {createMsgRoom, createPromise} = require("../Message/msgService");
 //controller : 판단 부분.
 
 /**
@@ -238,6 +239,16 @@ exports.postSigMatch = async function (req, res) {
   console.log(user_name[0].nickName,apply_name[0].nickName);
 
   const fcm2 = await userProvider.getFCM(applyIdx);
+
+  const room_id = userIdxFromJWT+'_'+applyIdx;
+  await createMsgRoom(userIdxFromJWT,applyIdx,room_id);
+  await createPromise(
+      signalInfo[0].sigPromiseArea,
+      signalInfo[0].sigPromiseTime,
+      signalInfo[0].sigPromiseMenu,
+      userIdxFromJWT,
+      room_id);
+
 
   //fcm 전송
   if(fcm2) sendFcmMessage(fcm2[0].fcm, buildSignalMessage(fcm2[0].fcm, "10001", applyIdx.toString(), apply_name[0].nickName, signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
