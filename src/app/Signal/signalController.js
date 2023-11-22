@@ -232,13 +232,6 @@ exports.postSigMatch = async function (req, res) {
 
   const fcm = await userProvider.getFCM(userIdxFromJWT);
   const signalInfo = await signalProvider.getMatchInfo(userIdxFromJWT);
-<<<<<<< HEAD
-=======
-  const user_name = await userProvider.getUserProfile(userIdxFromJWT);
-  const apply_name = await userProvider.getUserProfile(applyIdx);
-
-  console.log(user_name[0].nickName,apply_name[0].nickName);
->>>>>>> ac90db185b2d0e633331a23cac0e3cb48dd3e933
 
   const user_name = await userProvider.getUserProfile(userIdxFromJWT);
   const apply_name = await userProvider.getUserProfile(applyIdx);
