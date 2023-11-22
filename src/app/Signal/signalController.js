@@ -117,6 +117,12 @@ exports.postSignalApply = async function (req, res) {
   const fcm_user = await userProvider.getFCM(userIdxFromJWT);
   console.log("fcm",fcm_user[0].fcm);
 
+  // const user_name = await userProvider.getUserProfile(userIdxFromJWT);
+  // const apply_name = await userProvider.getUserProfile(applyedIdx);
+  //
+  // console.log("test");
+  // console.log(user_name[0].nickName,apply_name[0].nickName);
+
   const fcm_apply_user = await userProvider.getFCM(applyedIdx);
 
   if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildIdxMessage(fcm_user[0].fcm,"10000",userIdxFromJWT.toString()));
@@ -214,7 +220,7 @@ exports.postSigMatch = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const { applyIdx } = req.body;
 
-  //user = applyedIdx: 시그널 수락자
+  //user = userIdx: 시그널 수락자
   //apply = applyIdx : 시그널 전송자
   const matchingInfo = await signalService.matching(applyIdx, userIdxFromJWT);
 
@@ -225,13 +231,17 @@ exports.postSigMatch = async function (req, res) {
   console.log("here2")*/
 
   const fcm = await userProvider.getFCM(userIdxFromJWT);
-  const signalinfo = await signalProvider.getMatchInfo(userIdxFromJWT);
+  const signalInfo = await signalProvider.getMatchInfo(userIdxFromJWT);
+  const user_name = await userProvider.getUserProfile(userIdxFromJWT);
+  const apply_name = await userProvider.getUserProfile(applyIdx);
+
+  console.log(user_name[0].nickName,apply_name[0].nickName);
 
   const fcm2 = await userProvider.getFCM(applyIdx);
 
   //fcm 전송
-  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm2[0].fcm, "10001", applyIdx.toString(), "test", signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
-  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10001", userIdxFromJWT.toString(), "test", signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
+  if(fcm2) sendFcmMessage(fcm2[0].fcm, buildSignalMessage(fcm2[0].fcm, "10001", applyIdx.toString(), apply_name[0].nickName, signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
+  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10001", userIdxFromJWT.toString(), user_name[0].nickName, signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
   
   return res.send(baseResponse.SUCCESS);
 };
@@ -265,6 +275,18 @@ exports.patchSignalStatus = async function (req, res){
  */
 exports.patchSignalSave = async function (req, res){
   const userIdxFromJWT = req.verifiedToken.userIdx;
+  const { applyIdx } = req.body;
   const result = await signalProvider.patchSignalSave(userIdxFromJWT);
+
+  const user_name = await userProvider.getUserProfile(userIdxFromJWT);
+  const apply_name = await userProvider.getUserProfile(applyIdx);
+
+  const fcm = await userProvider.getFCM(userIdxFromJWT);
+  const fcm2 = await userProvider.getFCM(applyIdx);
+
+  if(fcm) sendFcmMessage(fcm[0].fcm,buildIdxMessage(10002),applyIdx.toString(),apply_name[0].nickName);
+  if(fcm2) sendFcmMessage(fcm2[0].fcm,buildIdxMessage(10002),userIdxFromJWT.toString(),user_name[0].nickName);
+
+
   return res.send(response(baseResponse.SUCCESS, result))
 };
