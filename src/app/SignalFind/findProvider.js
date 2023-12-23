@@ -1,7 +1,5 @@
 const { pool } = require("../../../config/database");
-const { errResponse } = require("../../../config/response");
 const { logger } = require("../../../config/winston");
-const baseResponse = require("../../../config/baseResponseStatus");
 
 const findDao = require("./findDao");
 const haversine = require('haversine');
