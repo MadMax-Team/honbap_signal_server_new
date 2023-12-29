@@ -11,7 +11,6 @@ const { errResponse } = require("../../../config/response");
 
 const jwt = require("jsonwebtoken");
 const { connect } = require("http2");
-const {user} = require("oracledb/examples/dbconfig");
 
 
 // 시그널 등록 1
