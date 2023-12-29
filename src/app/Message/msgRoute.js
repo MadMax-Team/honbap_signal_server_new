@@ -14,12 +14,13 @@ module.exports = function (app) {
     // 쪽지 확인
     app.get("/msg/:roomId", jwtMiddleware, msgController.getMsg);
 
-    //
+    // 쪽지방 나가기
+    //app.patch("msg/:roomId",jwtMiddleware,msgController.exitMsgroom);
 
     // 쪽지 방 삭제
     app.delete("/msg", jwtMiddleware, msgController.deleteMsg);
 
     // 쪽지 방 약속장소 생성
-    app.patch("/msg/promise/:roomId",jwtMiddleware,msgController.createPromise)
+    app.patch("/msg/promise/:roomId",jwtMiddleware,msgController.createPromise);
 
 };

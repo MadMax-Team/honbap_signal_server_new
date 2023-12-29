@@ -85,7 +85,7 @@ exports.updateExitUserIdx = async function (roomId, remain, type) {
 exports.createPromise = async function (where,when,menu,userIdx,roomId){
     try{
         const connection = await pool.getConnection(async (conn) => conn);
-        const params = [where, when, menu,userIdx,roomId];
+        const params = [where, when, menu,userIdx,userIdx,roomId];
         const createResult = await msgDao.createPromise(connection,params);
 
         connection.release();

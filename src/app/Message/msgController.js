@@ -121,12 +121,14 @@ exports.deleteMsg = async function (req, res) {
 exports.createPromise = async function (req,res) {
   const userIdx = req.verifiedToken.userIdx;
   const roomId = req.params.roomId;
+  console.log("test");
   console.log(roomId);
   const {
     where,
     when,
     menu
   } = req.body;
+
   //빈 값 체크
   if(!where){
     return res.send(response(baseResponse.MSG_WHERE_EMPTY));
@@ -137,7 +139,7 @@ exports.createPromise = async function (req,res) {
   if(!menu){
     return res.send(response(baseResponse.MSG_MENU_EMPTY));
   }
-  //console.log(where,when,menu,userIdx,roomId)
+  console.log(where,when,menu,userIdx,roomId)
 
   const promiseResponse = await msgService.createPromise(where,when,menu,userIdx,roomId);
 
