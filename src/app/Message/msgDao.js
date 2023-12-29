@@ -98,7 +98,7 @@ async function createPromise(connection,params) {
     const query = `
         UPDATE MessageRoom
         SET new_where = ?, new_when  = ?, menu  = ?
-        WHERE userIdx = ? AND roomId = ?;
+        WHERE (userIdx = ? OR matchIdx = ?) AND roomId = ?;
     `;
     const [row] = await connection.query(query, params);
     return row;
