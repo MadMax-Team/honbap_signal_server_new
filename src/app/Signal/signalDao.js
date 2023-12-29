@@ -101,7 +101,7 @@ async function updateSignal(connection, params, params2) {
   const query = `
                   UPDATE Signaling
                   SET sigPromiseTime = ?, sigPromiseArea = ?, sigPromiseMenu = ?, updateAt = DEFAULT
-                  WHERE userIdx = ? AND ((sigStatus = 1 AND sigMatchStatus = 0) OR sigStatus = 0);
+                  WHERE (userIdx = ? OR applyedIdx = ?) AND ((sigStatus = 1 AND sigMatchStatus = 0) OR sigStatus = 0);
                   `;
   const [row] = await connection.query(query, params);
 

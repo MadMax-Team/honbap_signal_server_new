@@ -3,6 +3,7 @@ const baseResponse = require("../../../config/baseResponseStatus");
 
 const msgProvider = require("../../app/Message/msgProvider");
 const msgService = require("../../app/Message/msgService");
+const signalService = require("../../app/Signal/signalService");
 
 const { response, errResponse } = require("../../../config/response");
 
@@ -142,6 +143,7 @@ exports.createPromise = async function (req,res) {
   console.log(where,when,menu,userIdx,roomId)
 
   const promiseResponse = await msgService.createPromise(where,when,menu,userIdx,roomId);
+  const signalResponse = await signalService.modifySigList(when,where,menu,userIdx);
 
   return res.send(baseResponse.SUCCESS);
 
