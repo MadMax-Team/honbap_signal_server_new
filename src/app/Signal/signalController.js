@@ -98,9 +98,11 @@ exports.patchSignalList = async function (req, res) {
   const apply_name = await userProvider.getUserProfile(applyedIdx);
 
   //fcm 전송
-  if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildSignalMessage(fcm_user[0].fcm,"11001",
+  if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildSignalMessage(fcm_user[0].fcm,"식사일정 변동알림",
+      "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001",
       userIdxFromJWT.toString(),user_name[0].nickName,sigPromiseArea,sigPromiseTime,sigPromiseMenu));
-  if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildSignalMessage(fcm_apply_user[0].fcm,"11001",
+  if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildSignalMessage(fcm_apply_user[0].fcm,"식사일정 변동알림",
+      "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001",
       applyedIdx.toString(),apply_name[0].nickName,sigPromiseArea,sigPromiseTime,sigPromiseMenu));
   return res.send(baseResponse.SUCCESS);
 };
@@ -267,8 +269,11 @@ exports.postSigMatch = async function (req, res) {
 
 
   //fcm 전송
-  if(fcm2) sendFcmMessage(fcm2[0].fcm, buildSignalMessage(fcm2[0].fcm, "10001", applyIdx.toString(), apply_name[0].nickName, signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
-  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10001", userIdxFromJWT.toString(), user_name[0].nickName, signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
+  if(fcm2) sendFcmMessage(fcm2[0].fcm, buildSignalMessage(fcm2[0].fcm,"매칭에 성공했어요!",user_name[0].nickName +
+      "님과 매칭되었습니다.\n\n 쪽지방을 연결해 드렸어요. 식사일정을 조율해보세요!", "10001", applyIdx.toString(), apply_name[0].nickName, signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
+  if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm,"매칭에 성공했어요!",
+      apply_name[0].nickName+" 님과 매칭되었습니다. \n\n 쪽지방을 연결해 드렸어요. 식사일정을 조율해보세요!",
+      "10001", userIdxFromJWT.toString(), user_name[0].nickName, signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
 
   return res.send(baseResponse.SUCCESS);
 };
