@@ -145,6 +145,19 @@ exports.createPromise = async function (req,res) {
   const promiseResponse = await msgService.createPromise(where,when,menu,userIdx,roomId);
   const signalResponse = await signalService.modifySigList(when,where,menu,userIdx);
 
+  const arr = roomId.split("_");
+  const userIdxAtRoom = arr[0];
+  const matchIdxAtRoom = arr[1];
+
+  const user_name = await userProvider.getUserProfile(userIdxAtRoom);
+  const apply_name = await userProvider.getUserProfile(matchIdxAtRoom);
+
+  const fcm = await userProvider.getFCM(userIdxAtRoom);
+  const fcm2 = await userProvider.getFCM(matchIdxAtRoom);
+
+  if(fcm) sendFcmMessage(fcm[0].fcm,buildIdxMessage(10002),userIdxAtRoom.toString(),apply_name[0].nickName);
+  if(fcm2) sendFcmMessage(fcm2[0].fcm,buildIdxMessage(10002),matchIdxAtRoom.toString(),user_name[0].nickName);
+
   return res.send(baseResponse.SUCCESS);
 
 }
