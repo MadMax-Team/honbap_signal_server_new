@@ -97,13 +97,21 @@ exports.patchSignalList = async function (req, res) {
   const user_name = await userProvider.getUserProfile(userIdxFromJWT);
   const apply_name = await userProvider.getUserProfile(applyedIdx);
 
+  const info_test = {userIdx : userIdxFromJWT.toString(),nickname : user_name[0].nickname,sigPromiseArea : sigPromiseArea
+    ,sigPromiseTime : sigPromiseTime,sigPromiseMenu : sigPromiseMenu};
+  const info_test2 = {userIdx : applyedIdx.toString(),nickname : apply_name[0].nickname,sigPromiseArea : sigPromiseArea
+    ,sigPromiseTime : sigPromiseTime,sigPromiseMenu : sigPromiseMenu};
+
+  var info_json = JSON.stringify(info_test);
+  var info_json2 = JSON.stringify(info_test2);
+
   //fcm 전송
   if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildSignalMessage(fcm_user[0].fcm,"식사일정 변동알림",
       "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001",
-      userIdxFromJWT.toString(),user_name[0].nickName,sigPromiseArea,sigPromiseTime,sigPromiseMenu));
+      [info_json]));
   if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildSignalMessage(fcm_apply_user[0].fcm,"식사일정 변동알림",
       "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001",
-      applyedIdx.toString(),apply_name[0].nickName,sigPromiseArea,sigPromiseTime,sigPromiseMenu));
+      [info_json2]));
   return res.send(baseResponse.SUCCESS);
 };
 
