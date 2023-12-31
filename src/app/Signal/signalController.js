@@ -13,6 +13,7 @@ const crypto = require("crypto");
 const regexEmail = require("regex-email");
 const {sendFcmMessage, buildSignalMessage,buildAlarmMessage} = require("../../../config/fcm.js")
 const {buildIdxMessage} = require("../../../config/fcm.js");
+const {createMsgRoom, createPromise} = require("../Message/msgService");
 //controller : 판단 부분.
 
 /**
@@ -110,12 +111,12 @@ exports.SigStatusOff = async function (req, res) {
  */
 exports.postSignalApply = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { userIdx, applyedIdx } = req.body;
+  const {userIdx, applyedIdx} = req.body;
   console.log(req.body)
   const apply = await signalService.signalApply(userIdx, applyedIdx, userIdxFromJWT);
 
   const fcm_user = await userProvider.getFCM(userIdxFromJWT);
-  console.log("fcm",fcm_user[0].fcm);
+  console.log("fcm", fcm_user[0].fcm);
 
   // const user_name = await userProvider.getUserProfile(userIdxFromJWT);
   // const apply_name = await userProvider.getUserProfile(applyedIdx);
@@ -125,8 +126,8 @@ exports.postSignalApply = async function (req, res) {
 
   const fcm_apply_user = await userProvider.getFCM(applyedIdx);
 
-  if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildIdxMessage(fcm_user[0].fcm,"10000",userIdxFromJWT.toString()));
-  if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildAlarmMessage(fcm_apply_user[0].fcm,"10000"));
+  if (fcm_user) sendFcmMessage(fcm_user[0].fcm, buildIdxMessage(fcm_user[0].fcm, "10000", userIdxFromJWT.toString()));
+  if (fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm, buildIdxMessage(fcm_apply_user[0].fcm, "10000", applyedIdx.toString()));
 
   return res.send(baseResponse.SUCCESS);
 };
@@ -168,7 +169,7 @@ exports.cancelSignalApply = async function (req, res) {
     applyedIdx,
     userIdxFromJWT
   );
-
+  console.log(userIdxFromJWT,applyedIdx);
   const fcm_user = await userProvider.getFCM(userIdxFromJWT);
   const fcm_apply_user = await userProvider.getFCM(applyedIdx);
 
@@ -240,10 +241,20 @@ exports.postSigMatch = async function (req, res) {
   
   const fcm2 = await userProvider.getFCM(applyIdx);
 
+  const room_id = userIdxFromJWT+'_'+applyIdx;
+  await createMsgRoom(userIdxFromJWT,applyIdx,room_id);
+  await createPromise(
+      signalInfo[0].sigPromiseArea,
+      signalInfo[0].sigPromiseTime,
+      signalInfo[0].sigPromiseMenu,
+      userIdxFromJWT,
+      room_id);
+
+
   //fcm 전송
   if(fcm2) sendFcmMessage(fcm2[0].fcm, buildSignalMessage(fcm2[0].fcm, "10001", applyIdx.toString(), apply_name[0].nickName, signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
   if(fcm) sendFcmMessage(fcm[0].fcm, buildSignalMessage(fcm[0].fcm, "10001", userIdxFromJWT.toString(), user_name[0].nickName, signalInfo[0].sigPromiseArea, signalInfo[0].sigPromiseTime, signalInfo[0].sigPromiseMenu));
-  
+
   return res.send(baseResponse.SUCCESS);
 };
 

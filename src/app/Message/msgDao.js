@@ -13,20 +13,21 @@ async function createMsgRoom(connection, params) {
 
 // 쪽지 방 확인 *** 2 ***
 async function getMsgRoom(connection, params) {
-    const query =   `
-                    SELECT  MM.roomId , MM.msg as lastMessage , MM.sendAt as lastSendedAt , u.nickName , u.profileImg 
-                    FROM Message AS MM
-                        RIGHT JOIN MessageRoom AS m ON m.roomId = MM.roomId  AND (userIdx = ? OR matchIdx=?)
-                        LEFT JOIN UserProfile As u ON u.userIdx = (CASE
-                            WHEN m.userIdx = ? THEN m.matchIdx
-                            WHEN m.userIdx != ? THEN m.userIdx
-                        END)
-                    WHERE (MM.roomId,MM.sendAt) in (select roomId,MAX(sendAt) from Message group by roomId)
-                    ORDER BY MM.sendAt DESC 
-                    
-    
-                    `
+    const query =   `                    
+        SELECT  m.roomId ,u.nickName , u.profileImg, MM.msg as lastMessage , MM.sendAt as lastSendedAt
+        FROM MessageRoom AS m
+            LEFT JOIN Message AS MM ON m.roomId = MM.roomId AND (MM.roomId,MM.sendAt) in (select roomId,MAX(sendAt) from Message group by roomId)
+            LEFT JOIN UserProfile As u ON u.userIdx = (CASE
+                WHEN m.userIdx = ? THEN m.matchIdx
+                WHEN m.userIdx != ? THEN m.userIdx
+                END)
+        WHERE (m.userIdx = ? OR m.matchIdx=?)
+        ORDER BY MM.sendAt DESC
+
+    `;
+
     const [row] = await connection.query(query, params);
+
     return row;
 }
 
@@ -97,7 +98,7 @@ async function createPromise(connection,params) {
     const query = `
         UPDATE MessageRoom
         SET new_where = ?, new_when  = ?, menu  = ?
-        WHERE userIdx = ? AND roomId = ?;
+        WHERE (userIdx = ? OR matchIdx = ?) AND roomId = ?;
     `;
     const [row] = await connection.query(query, params);
     return row;

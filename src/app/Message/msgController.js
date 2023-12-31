@@ -3,6 +3,7 @@ const baseResponse = require("../../../config/baseResponseStatus");
 
 const msgProvider = require("../../app/Message/msgProvider");
 const msgService = require("../../app/Message/msgService");
+const signalService = require("../../app/Signal/signalService");
 
 const { response, errResponse } = require("../../../config/response");
 
@@ -12,10 +13,19 @@ exports.createMsgRoom = async function (req, res) {
   const matchIdx = req.body.matchIdx;
 
   const roomId = userIdxFromJWT + '_' + matchIdx;
+  const roomId2 = matchIdx + '_' + userIdxFromJWT;
+
 
   if(!matchIdx) {
     return res.send(response(baseResponse.MSG_MATCHIDX_EMPTY));
   } // matchIdx 값이 들어오지 않았습니다.
+
+  const exitroom = await msgProvider.getRoomIdx(roomId);
+  const exitroom2 = await  msgProvider.getRoomIdx(roomId2);
+
+  if(exitroom.length > 0 || exitroom2.length > 0){
+    return res.send(baseResponse.SUCCESS);
+  }
 
   const result = await msgService.createMsgRoom(userIdxFromJWT, matchIdx, roomId);
   return res.send(baseResponse.SUCCESS);
@@ -112,12 +122,14 @@ exports.deleteMsg = async function (req, res) {
 exports.createPromise = async function (req,res) {
   const userIdx = req.verifiedToken.userIdx;
   const roomId = req.params.roomId;
+  console.log("test");
   console.log(roomId);
   const {
     where,
     when,
     menu
   } = req.body;
+
   //빈 값 체크
   if(!where){
     return res.send(response(baseResponse.MSG_WHERE_EMPTY));
@@ -128,9 +140,10 @@ exports.createPromise = async function (req,res) {
   if(!menu){
     return res.send(response(baseResponse.MSG_MENU_EMPTY));
   }
-  //console.log(where,when,menu,userIdx,roomId)
+  console.log(where,when,menu,userIdx,roomId)
 
   const promiseResponse = await msgService.createPromise(where,when,menu,userIdx,roomId);
+  const signalResponse = await signalService.modifySigList(when,where,menu,userIdx);
 
   const arr = roomId.split("_");
   const userIdxAtRoom = arr[0];

@@ -11,7 +11,6 @@ const { errResponse } = require("../../../config/response");
 
 const jwt = require("jsonwebtoken");
 const { connect } = require("http2");
-const {user} = require("oracledb/examples/dbconfig");
 
 
 // 시그널 등록 1
@@ -66,7 +65,7 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
 exports.modifySigList = async function (sigPromiseTime ,sigPromiseArea, sigPromiseMenu, userIdx) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
-        const params = [sigPromiseTime, sigPromiseArea, sigPromiseMenu, userIdx];
+        const params = [sigPromiseTime, sigPromiseArea, sigPromiseMenu, userIdx,userIdx];
         const result = await signalDao.updateSignal(connection, params);
         connection.release();
 
