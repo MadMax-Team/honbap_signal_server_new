@@ -111,7 +111,7 @@ async function updateSignal(connection, params, params2) {
                 SET fcm = ?
                 WHERE userIdx = ?;
               `
-  const [row2] = await connection.query(query2, params2);
+  //const [row2] = await connection.query(query2, params2);
   
   return row;
 }
