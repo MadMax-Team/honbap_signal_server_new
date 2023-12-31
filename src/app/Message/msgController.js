@@ -155,12 +155,21 @@ exports.createPromise = async function (req,res) {
   const fcm_user = await userProvider.getFCM(userIdx);
   const fcm_apply_user = await userProvider.getFCM(applyedIdx);
 
+
+  const info_test = {userIdx : userIdx.toString(),nickname : user_name[0].nickname,sigPromiseArea : where
+  ,sigPromiseTime : when,sigPromiseMenu : menu};
+  const info_test2 = {userIdx : applyedIdx.toString(),nickname : apply_name[0].nickname,sigPromiseArea : where
+    ,sigPromiseTime : when,sigPromiseMenu : menu};
+
+  var info_json = JSON.stringify(info_test);
+  var info_json2 = JSON.stringify(info_test2);
+
   if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildSignalMessage(fcm_user[0].fcm,"식사일정 변동알림",
-      "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001",
-      userIdx.toString(),user_name[0].nickName,where,when,menu));
+      "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001", [info_json]));
+
   if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildSignalMessage(fcm_apply_user[0].fcm,"식사일정 변동알림",
       "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001",
-      applyedIdx.toString(),apply_name[0].nickName,where,when,menu));
+      [info_json2]));
   return res.send(baseResponse.SUCCESS);
 
 }

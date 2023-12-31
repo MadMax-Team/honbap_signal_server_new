@@ -32,7 +32,7 @@ function getAccessToken() {
 
 
 //10001, 11001
-function buildSignalMessage(token,title,body, code, userIdx, nickName, sigPromiseArea, sigPromiseTime, sigPromiseMenu){
+function buildSignalMessage(token,title,body, code, [info]){
     return {
         "message": {
             "token": token,
@@ -42,13 +42,7 @@ function buildSignalMessage(token,title,body, code, userIdx, nickName, sigPromis
             },
             "data": {
                 "code": code,
-            },
-            "message":{
-                "userIdx": userIdx,
-                "nickName": nickName,
-                "sigPromiseArea": sigPromiseArea,
-                "sigPromiseTime": sigPromiseTime,
-                "sigPromiseMenu": sigPromiseMenu
+                "message": info
             }
         }
     };
