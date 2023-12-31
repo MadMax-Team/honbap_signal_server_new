@@ -20,14 +20,9 @@ exports.createMsgRoom = async function (req, res) {
     return res.send(response(baseResponse.MSG_MATCHIDX_EMPTY));
   } // matchIdx 값이 들어오지 않았습니다.
 
-  const exitroom = await msgProvider.getRoomIdx(roomId);
-  const exitroom2 = await  msgProvider.getRoomIdx(roomId2);
 
-  if(exitroom.length > 0 || exitroom2.length > 0){
-    return res.send(baseResponse.SUCCESS);
-  }
 
-  const result = await msgService.createMsgRoom(userIdxFromJWT, matchIdx, roomId);
+  const result = await msgService.createMsgRoom(userIdxFromJWT, matchIdx, roomId , roomId2);
   return res.send(baseResponse.SUCCESS);
 }
 

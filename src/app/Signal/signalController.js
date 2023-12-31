@@ -242,7 +242,8 @@ exports.postSigMatch = async function (req, res) {
   const fcm2 = await userProvider.getFCM(applyIdx);
 
   const room_id = userIdxFromJWT+'_'+applyIdx;
-  await createMsgRoom(userIdxFromJWT,applyIdx,room_id);
+  const room_id2 = applyIdx + '_' +userIdxFromJWT;
+  await createMsgRoom(userIdxFromJWT,applyIdx,room_id ,room_id2);
   await createPromise(
       signalInfo[0].sigPromiseArea,
       signalInfo[0].sigPromiseTime,
