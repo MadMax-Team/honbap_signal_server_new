@@ -23,14 +23,9 @@ exports.createMsgRoom = async function (req, res) {
     return res.send(response(baseResponse.MSG_MATCHIDX_EMPTY));
   } // matchIdx 값이 들어오지 않았습니다.
 
-  const exitroom = await msgProvider.getRoomIdx(roomId);
-  const exitroom2 = await  msgProvider.getRoomIdx(roomId2);
 
-  if(exitroom.length > 0 || exitroom2.length > 0){
-    return res.send(baseResponse.SUCCESS);
-  }
 
-  const result = await msgService.createMsgRoom(userIdxFromJWT, matchIdx, roomId);
+  const result = await msgService.createMsgRoom(userIdxFromJWT, matchIdx, roomId , roomId2);
   return res.send(baseResponse.SUCCESS);
 }
 
@@ -128,6 +123,7 @@ exports.createPromise = async function (req,res) {
   console.log("test");
   console.log(roomId);
   const {
+    applyedIdx,
     where,
     when,
     menu
@@ -148,19 +144,32 @@ exports.createPromise = async function (req,res) {
   const promiseResponse = await msgService.createPromise(where,when,menu,userIdx,roomId);
   const signalResponse = await signalService.modifySigList(when,where,menu,userIdx);
 
+
   const arr = roomId.split("_");
   const userIdxAtRoom = arr[0];
   const matchIdxAtRoom = arr[1];
 
-  const user_name = await userProvider.getUserProfile(userIdxAtRoom);
-  const apply_name = await userProvider.getUserProfile(matchIdxAtRoom);
+  const user_name = await userProvider.getUserProfile(userIdx);
+  const apply_name = await userProvider.getUserProfile(applyedIdx);
 
-  const fcm = await userProvider.getFCM(userIdxAtRoom);
-  const fcm2 = await userProvider.getFCM(matchIdxAtRoom);
+  const fcm_user = await userProvider.getFCM(userIdx);
+  const fcm_apply_user = await userProvider.getFCM(applyedIdx);
 
-  if(fcm) sendFcmMessage(fcm[0].fcm,buildIdxMessage(10002),userIdxAtRoom.toString(),apply_name[0].nickName);
-  if(fcm2) sendFcmMessage(fcm2[0].fcm,buildIdxMessage(10002),matchIdxAtRoom.toString(),user_name[0].nickName);
 
+  const info_test = {userIdx : userIdx.toString(),nickname : user_name[0].nickname,sigPromiseArea : where
+  ,sigPromiseTime : when,sigPromiseMenu : menu};
+  const info_test2 = {userIdx : applyedIdx.toString(),nickname : apply_name[0].nickname,sigPromiseArea : where
+    ,sigPromiseTime : when,sigPromiseMenu : menu};
+
+  var info_json = JSON.stringify(info_test);
+  var info_json2 = JSON.stringify(info_test2);
+
+  if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildSignalMessage(fcm_user[0].fcm,"식사일정 변동알림",
+      "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001", [info_json]));
+
+  if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildSignalMessage(fcm_apply_user[0].fcm,"식사일정 변동알림",
+      "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001",
+      [info_json2]));
   return res.send(baseResponse.SUCCESS);
 
 }
