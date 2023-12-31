@@ -42,6 +42,8 @@ function buildSignalMessage(token,title,body, code, userIdx, nickName, sigPromis
             },
             "data": {
                 "code": code,
+            },
+            "message":{
                 "userIdx": userIdx,
                 "nickName": nickName,
                 "sigPromiseArea": sigPromiseArea,
