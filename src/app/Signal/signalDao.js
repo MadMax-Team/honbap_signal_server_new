@@ -262,13 +262,26 @@ async function patchSignalStatus(connection, userIdx) {
 }
 
 // 시그널 매칭 후 저장  *** 14 ***
-async function patchSignalSave(connection, userIdx) {
+async function patchSignalSave(connection, param) {
   const query = `
                     UPDATE Signaling
-                    SET sigStatus = 1
+                    SET sigStatus = 1, applyedIdx = ?
                     WHERE userIdx = ? AND sigStatus = 0 AND sigMatchStatus = 1; 
   `
-  const [row] = await connection.query(query, userIdx);
+  const [row] = await connection.query(query, param);
+
+  return row;
+}
+
+// 시그널 매칭 후 삭제  *** 15 ***
+async function deleteSignalSave(connection, applyedIdx) {
+
+  const query = `
+  DELETE FROM Signaling
+  WHERE userIdx = ? AND sigStatus = 0 AND sigMatchStatus = 1; 
+`
+  const [row] = await connection.query(query, applyedIdx);
+
   return row;
 }
 
@@ -292,5 +305,6 @@ module.exports = {
   getInfoFromNickName, //16
   matchSignal,
   patchSignalStatus,
-  patchSignalSave
+  patchSignalSave,
+  deleteSignalSave
 };

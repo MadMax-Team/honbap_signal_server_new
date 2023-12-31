@@ -175,19 +175,39 @@ exports.patchSignalStatus = async function (userIdx) {
 
 
 // 시그널 매칭 후 저장 14
-exports.patchSignalSave = async function (userIdx) {
+exports.patchSignalSave = async function (param) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
 
     const result = await signalDao.patchSignalSave(
       connection,
-      userIdx
+      param
     );
+
     connection.release();
 
     return result[0];
   } catch (err) {
     logger.error(`patchSignalSave Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}
+
+// 시그널 매칭 후 상대방 삭제
+exports.deleteSignalSave = async function (applyedIdx) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const result = await signalDao.deleteSignalSave(
+      connection,
+      applyedIdx
+    )
+
+    connection.release();
+
+    return result[0];
+  } catch (err) {
+    logger.error(`deleteSignalSave Provider error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   }
 }
