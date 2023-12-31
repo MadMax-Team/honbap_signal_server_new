@@ -81,7 +81,8 @@ exports.getSignalInfo = async function (req, res) {
  */
 exports.patchSignalList = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { sigPromiseTime, sigPromiseArea, sigPromiseMenu } = req.body;
+  const { applyedIdx,sigPromiseTime, sigPromiseArea, sigPromiseMenu  } = req.body;
+  console.log(applyedIdx);
 
   const modifySigList = await signalService.modifySigList(
     sigPromiseTime,
@@ -89,6 +90,18 @@ exports.patchSignalList = async function (req, res) {
     sigPromiseMenu,
     userIdxFromJWT
   );
+
+  //fcm 전송에 필요한 값 DB 에서 가져오기
+  const fcm_user = await  userProvider.getFCM(userIdxFromJWT);
+  const fcm_apply_user = await userProvider.getFCM(applyedIdx);
+  const user_name = await userProvider.getUserProfile(userIdxFromJWT);
+  const apply_name = await userProvider.getUserProfile(applyedIdx);
+
+  //fcm 전송
+  if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildSignalMessage(fcm_user[0].fcm,"11001",
+      userIdxFromJWT.toString(),user_name[0].nickName,sigPromiseArea,sigPromiseTime,sigPromiseMenu));
+  if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildSignalMessage(fcm_apply_user[0].fcm,"11001",
+      applyedIdx.toString(),apply_name[0].nickName,sigPromiseArea,sigPromiseTime,sigPromiseMenu));
   return res.send(baseResponse.SUCCESS);
 };
 
@@ -99,6 +112,7 @@ exports.patchSignalList = async function (req, res) {
  */
 exports.SigStatusOff = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
+
 
   const signalOff = await signalService.signalOff(userIdxFromJWT);
   return res.send(baseResponse.SUCCESS);
