@@ -65,7 +65,7 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
 exports.modifySigList = async function (sigPromiseTime ,sigPromiseArea, sigPromiseMenu, userIdx) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
-        const params = [sigPromiseTime, sigPromiseArea, sigPromiseMenu, userIdx,userIdx];
+        const params = [sigPromiseTime, sigPromiseArea, sigPromiseMenu, userIdx, userIdx];
         const result = await signalDao.updateSignal(connection, params);
         connection.release();
 
