@@ -123,6 +123,7 @@ exports.createPromise = async function (req,res) {
   console.log("test");
   console.log(roomId);
   const {
+    applyedIdx,
     where,
     when,
     menu
@@ -147,15 +148,18 @@ exports.createPromise = async function (req,res) {
   const userIdxAtRoom = arr[0];
   const matchIdxAtRoom = arr[1];
 
-  const user_name = await userProvider.getUserProfile(userIdxAtRoom);
-  const apply_name = await userProvider.getUserProfile(matchIdxAtRoom);
+  const user_name = await userProvider.getUserProfile(userIdx);
+  const apply_name = await userProvider.getUserProfile(applyedIdx);
 
-  const fcm = await userProvider.getFCM(userIdxAtRoom);
-  const fcm2 = await userProvider.getFCM(matchIdxAtRoom);
+  const fcm_user = await userProvider.getFCM(userIdx);
+  const fcm_apply_user = await userProvider.getFCM(applyedIdx);
 
-  if(fcm) sendFcmMessage(fcm[0].fcm,buildIdxMessage(10002),userIdxAtRoom.toString(),apply_name[0].nickName);
-  if(fcm2) sendFcmMessage(fcm2[0].fcm,buildIdxMessage(10002),matchIdxAtRoom.toString(),user_name[0].nickName);
-
+  if(fcm_user) sendFcmMessage(fcm_user[0].fcm,buildSignalMessage(fcm_user[0].fcm,"식사일정 변동알림",
+      "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001",
+      userIdx.toString(),user_name[0].nickName,where,when,menu));
+  if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildSignalMessage(fcm_apply_user[0].fcm,"식사일정 변동알림",
+      "고객님의 시그널 정보가 성공적으로 변경되었어요!","11001",
+      applyedIdx.toString(),apply_name[0].nickName,where,when,menu));
   return res.send(baseResponse.SUCCESS);
 
 }
