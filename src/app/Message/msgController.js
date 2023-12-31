@@ -144,6 +144,7 @@ exports.createPromise = async function (req,res) {
   const promiseResponse = await msgService.createPromise(where,when,menu,userIdx,roomId);
   const signalResponse = await signalService.modifySigList(when,where,menu,userIdx);
 
+
   const arr = roomId.split("_");
   const userIdxAtRoom = arr[0];
   const matchIdxAtRoom = arr[1];
