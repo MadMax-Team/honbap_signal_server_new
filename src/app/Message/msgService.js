@@ -6,10 +6,18 @@ const msgDao = require("./msgDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
+const msgProvider = require("./msgProvider");
 
 // 쪽지 방 생성
-exports.createMsgRoom = async function (userIdx, matchIdx, roomId) {
+exports.createMsgRoom = async function (userIdx, matchIdx, roomId , roomId2) {
     try {
+
+        const exitroom = await msgProvider.getRoomIdx(roomId);
+        const exitroom2 = await  msgProvider.getRoomIdx(roomId2);
+
+        if(exitroom.length > 0 || exitroom2.length > 0){
+            return response(baseResponse.SUCCESS);
+        }
         const params = [userIdx, matchIdx, roomId];
         const connection = await pool.getConnection(async (conn) => conn);
 
