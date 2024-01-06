@@ -264,14 +264,13 @@ async function patchSignalStatus(connection, userIdx) {
 }
 
 // 시그널 매칭 후 저장  *** 14 ***
-async function patchSignalSave(connection, param) {
+async function patchSignalSave(connection, userIdx) {
   const query = `
                    UPDATE Signaling
                     SET sigStatus = 1
                     WHERE userIdx = ? AND sigStatus = 0 AND sigMatchStatus = 1; 
-
   `
-  const [row] = await connection.query(query, param);
+  const [row] = await connection.query(query, userIdx);
 
   return row;
 }
