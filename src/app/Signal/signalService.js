@@ -37,7 +37,7 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
         {
             console.log("signal update");
 
-            const signalRows = [sigPromiseTime, sigPromiseArea, sigPromiseMenu, userIdx]
+            const signalRows = [sigPromiseTime, sigPromiseArea, sigPromiseMenu, userIdx,userIdx]
             const fcmRows = [fcm, userIdx]
             result = await signalDao.updateSignal(connection, signalRows, fcmRows);
         }
