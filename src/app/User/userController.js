@@ -243,7 +243,7 @@ exports.getUserProfile = async function (req, res) {
  */
 exports.patchUserPassword = async function (req, res) {
   const userIdxFromJWT = req.verifiedToken.userIdx;
-  const { password } = req.body;
+  const { oldpassword,password } = req.body;
   //validation
   if (!userIdxFromJWT) {
     return res.send(errResponse(baseResponse.USER_USERIDX_EMPTY));  //2042
@@ -252,9 +252,11 @@ exports.patchUserPassword = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_USERIDX_LENGTH));  //2043
   }
 
-  const updatePW = await userService.updatePassword(password, userIdxFromJWT);
+  console.log(oldpassword , password);
 
-  return res.send(baseResponse.SUCCESS);
+  const updatePW = await userService.updatePassword(oldpassword,password, userIdxFromJWT);
+
+  return res.send(updatePW);
 };
 
 /**
