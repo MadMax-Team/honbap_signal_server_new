@@ -240,18 +240,6 @@ async function insertUsernull(connection, userIdx) {
     return row;
 }
 
-
-//회원가입할때 프로필 널값 넣기
-async function insertUsernull(connection,idx){
-    const query = `
-                INSERT INTO UserProfile
-                (userIdx)
-                VALUES (?);
-                `;
-    const [row] = await connection.query(query,idx);
-
-    return row;
-}
 //회원가입할때 위치 정보 널값 넣기
 async function insertLocationnull(connection,idx){
     const query = `
