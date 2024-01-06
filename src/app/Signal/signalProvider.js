@@ -175,13 +175,13 @@ exports.patchSignalStatus = async function (userIdx) {
 
 
 // 시그널 매칭 후 저장 14
-exports.patchSignalSave = async function (param) {
+exports.patchSignalSave = async function (userIdx) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
 
     const result = await signalDao.patchSignalSave(
       connection,
-      param
+      userIdx
     );
 
     connection.release();
