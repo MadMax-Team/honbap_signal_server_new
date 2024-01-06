@@ -16,6 +16,7 @@ exports.getSignalList = async function (userIdx)
     }); // 중복 제거
     
     let nearUsers = [];
+    nearUsers.length = 0;
 
     for(const signalOnUser of signalOnUserList) {
     
@@ -35,7 +36,6 @@ exports.getSignalList = async function (userIdx)
     };
     logger.info(JSON.stringify(nearUsers));
     
-    nearUsers.length = 0;
     connection.release();
     
     return nearUsers;
