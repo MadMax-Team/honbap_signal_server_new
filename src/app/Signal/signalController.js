@@ -321,10 +321,8 @@ exports.patchSignalSave = async function (req, res){
 
   param = [applyIdx, userIdxFromJWT]
   const result = await signalProvider.patchSignalSave(param);
-  const result2 = await signalProvider.deleteSignalSave(applyIdx);
 
   console.log("result: ", result);
-  console.log("result2: ", result2);
 
   const user_name = await userProvider.getUserProfile(userIdxFromJWT);
   const apply_name = await userProvider.getUserProfile(applyIdx);
@@ -336,8 +334,6 @@ exports.patchSignalSave = async function (req, res){
   if(fcm) sendFcmMessage(fcm[0].fcm,buildIdxMessage(fcm[0].fcm,10002,applyIdx.toString(),apply_name[0].nickName));
   if(fcm2) sendFcmMessage(fcm2[0].fcm,buildIdxMessage(fcm2[0].fcm,10002,userIdxFromJWT.toString(),user_name[0].nickName));
   console.log(user_name, fcm);
-
-
 
   return res.send(response(baseResponse.SUCCESS, result))
 };
