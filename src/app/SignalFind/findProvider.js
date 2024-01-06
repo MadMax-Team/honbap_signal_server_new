@@ -18,8 +18,9 @@ exports.getSignalList = async function (userIdx)
     let nearUsers = [];
 
     for(const signalOnUser of signalOnUserList) {
+    
       if(signalOnUser.userIdx === userIdx) continue;
-
+  
       const distance = haversine(myLocation[0], {latitude: signalOnUser.latitude, longitude: signalOnUser.longitude}, { unit: 'km' });
       
       if (distance <= 10) {
@@ -28,11 +29,12 @@ exports.getSignalList = async function (userIdx)
           ...signalOnUser,
           distance: distance  // 거리 정보 추가
         };
+        
         nearUsers.push(userWithDistance);
-        logger.info(JSON.stringify(nearUsers));
       }
     };
-
+    logger.info(JSON.stringify(nearUsers));
+    
     nearUsers.length = 0;
     connection.release();
     
