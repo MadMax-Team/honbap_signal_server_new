@@ -317,6 +317,9 @@ exports.patchSignalSave = async function (req, res){
   const userIdxFromJWT = req.verifiedToken.userIdx;
   const { applyIdx } = req.body;
 
+  if(!applyIdx)
+      return res.send(baseResponse.SIGNAL_APPLYIDX_EMPTY);
+
   console.log("userIdx: ", userIdxFromJWT, " applyIdx: ", applyIdx );
 
   param = [applyIdx, userIdxFromJWT]
