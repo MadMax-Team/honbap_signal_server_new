@@ -19,10 +19,14 @@ exports.getSignalList = async function (userIdx)
     nearUsers.length = 0;
 
     for(const signalOnUser of signalOnUserList) {
+
+      console.log(signalOnUser);
     
       if(signalOnUser.userIdx === userIdx) continue;
   
       const distance = haversine(myLocation[0], {latitude: signalOnUser.latitude, longitude: signalOnUser.longitude}, { unit: 'km' });
+
+      console.log(distance);
       
       if (distance <= 10) {
         
