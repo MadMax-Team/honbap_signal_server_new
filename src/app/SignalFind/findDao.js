@@ -38,7 +38,7 @@ async function getSignalOnUsers(connection){
                           LEFT JOIN User AS u ON s.userIdx = u.userIdx
                           LEFT JOIN UserProfile AS up ON s.userIdx = up.userIdx
                           LEFT JOIN UserLocation As ul ON s.userIdx = ul.userIdx
-                  WHERE s.sigStatus = 1
+                  WHERE s.sigStatus = 1 AND s.sigMatchStatus = 0
                 `;
   const [row] = await connection.query(query);
   return row ;
