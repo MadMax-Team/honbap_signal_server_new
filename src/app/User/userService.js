@@ -100,8 +100,24 @@ exports.createUserProfile = async function (userIdx, profileImg, taste, hateFood
 };
 
 // 패스워드 변경
-exports.updatePassword = async function(password, userIdx) {
+exports.updatePassword = async function(oldpassword,password, userIdx) {
     try {
+
+        const hashedOldPassword = await crypto
+            .createHash("sha512")
+            .update(oldpassword)
+            .digest("hex");
+
+        console.log(userIdx);
+
+        const userInfoResponse = await userProvider.getUserInfo(userIdx);
+
+
+        console.log(userInfoResponse[0].email);
+
+        const passwordRows = await userProvider.passwordCheck(userInfoResponse[0].email, hashedOldPassword);
+        if (passwordRows.length == 0)
+            return errResponse(baseResponse.LOGIN_PW_NOT_CORRECT);
 
         const hashedPassword = await crypto
         .createHash("sha512")
@@ -115,7 +131,7 @@ exports.updatePassword = async function(password, userIdx) {
 
         connection.release();
 
-        return result;
+        return response(baseResponse.SUCCESS);
     } catch (err) {
         logger.error(`App - updatePassword Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
