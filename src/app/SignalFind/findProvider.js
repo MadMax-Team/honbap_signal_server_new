@@ -15,9 +15,10 @@ exports.getSignalList = async function (userIdx)
       return signalOnUserList.find(obj => obj.userIdx === userIdx);
     }); // 중복 제거
     
-    const nearUsers = [];
+    let nearUsers = [];
 
-    signalOnUserList.forEach(signalOnUser => {
+    for(const signalOnUser of signalOnUserList) {
+      if(signalOnUser.userIdx === userIdx) continue;
 
       const distance = haversine(myLocation[0], {latitude: signalOnUser.latitude, longitude: signalOnUser.longitude}, { unit: 'km' });
       
@@ -30,8 +31,9 @@ exports.getSignalList = async function (userIdx)
         nearUsers.push(userWithDistance);
         logger.info(JSON.stringify(nearUsers));
       }
-    });
+    };
 
+    nearUsers.length = 0;
     connection.release();
     
     return nearUsers;
