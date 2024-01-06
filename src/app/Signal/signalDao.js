@@ -17,7 +17,7 @@ async function insertSignal(connection, params, params2) {
   const query = `
                   INSERT INTO Signaling
                   (userIdx, sigStatus, sigMatchStatus, sigPromiseTime, sigPromiseArea, sigPromiseMenu, checkSigWrite)
-                  VALUES (?, ?, ?, ?, ?, ?, ?);
+                  VALUES (?, ?, ?, STR_TO_DATE(?, '%Y-%m-%dT%H:%i:%s.%fZ'), ?, ?, ?);
                   `;
   const [row] = await connection.query(query, params);
   console.log("row", row);
