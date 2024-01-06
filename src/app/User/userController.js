@@ -97,11 +97,11 @@ exports.postUsers = async function (req, res) {
   // phoneNum
 
   // 빈 값 체크
-  if (!phoneNum)
-    return res.send(response(baseResponse.SIGNUP_PHONENUMBER_EMPTY));
+  //if (!phoneNum)
+  //  return res.send(response(baseResponse.SIGNUP_PHONENUMBER_EMPTY));
   // 길이체크
-  if (phoneNum.length > 11)
-    return res.send(response(baseResponse.SIGNUP_PHONENUMBER_LENGTH));
+  //if (phoneNum.length > 11)
+  //  return res.send(response(baseResponse.SIGNUP_PHONENUMBER_LENGTH));
 
   // 빈 값 체크
   if (!password) return res.send(response(baseResponse.SIGNUP_PASSWORD_EMPTY)); // 2010

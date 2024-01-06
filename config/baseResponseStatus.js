@@ -318,6 +318,11 @@ module.exports = {
     code: 4002,
     message: "유저 인덱스가 존재하지 않습니다.",
   },
+  SIGNAL_APPLYIDX_EMPTY: {
+    isSuccess: false,
+    code: 4003,
+    message: "매칭 상대 인덱스가 존재하지 않습니다.",
+  },
 
   IF_AGATHA_DEFEAT_KOBBOONG: {
     isSuccess: false,
