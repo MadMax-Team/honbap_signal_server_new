@@ -46,27 +46,31 @@ async function findMySignal(connection, userIdx) {
 // 시그널 상태 조회 *** 2 ***
 async function getSignalStatus(connection, params) {
   const query = `
-      SELECT s.*, u.userName
-      FROM Signaling AS s, User AS u
+      SELECT s.*, u.userName , up.profileImg
+      FROM Signaling AS s, User AS u , UserProfile AS up
       WHERE NOT (s.sigStatus = 1 AND s.sigMatchStatus = 1) 
-      AND (s.userIdx = ? OR s.applyedIdx = ?) AND u.userIdx = ?;
+      AND (s.userIdx = ? OR s.applyedIdx = ?) AND u.userIdx = ?
+      AND up.userIdx = ?;
   `
   const [row] = await connection.query(query, params);
 
   const query2 = `
-  SELECT u.userName
-  FROM User AS u
+  SELECT u.userName , up.profileImg
+  FROM User AS u 
+      JOIN UserProfile AS up ON up.userIdx = u.userIdx
   WHERE u.userIdx = ?;
   `
   if (row.length != 0 && row[0].applyedIdx != null && row[0].userIdx == params[0])
   {
     const [row2] = await connection.query(query2, row[0].applyedIdx);
     row[0].userName = row2[0].userName;
+    row[0].userProfile = row2[0].userProfile;
   }
   else if (row.length != 0 && row[0].applyedIdx != null && row[0].applyedIdx == params[0])
   {
     const [row2] = await connection.query(query2, row[0].userIdx);
     row[0].userName = row2[0].userName;
+    row[0].userProfile = row2[0].userProfile;
   }
 
   return row;

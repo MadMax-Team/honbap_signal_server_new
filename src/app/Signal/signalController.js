@@ -324,8 +324,8 @@ exports.patchSignalSave = async function (req, res){
   const fcm = await userProvider.getFCM(userIdxFromJWT);
   const fcm2 = await userProvider.getFCM(applyIdx);
 
-  if(fcm) sendFcmMessage(fcm[0].fcm,buildIdxMessage(10002),applyIdx.toString(),apply_name[0].nickName);
-  if(fcm2) sendFcmMessage(fcm2[0].fcm,buildIdxMessage(10002),userIdxFromJWT.toString(),user_name[0].nickName);
+  if(fcm) sendFcmMessage(fcm[0].fcm,buildIdxMessage(10002,applyIdx.toString(),apply_name[0].nickName));
+  if(fcm2) sendFcmMessage(fcm2[0].fcm,buildIdxMessage(10002,userIdxFromJWT.toString(),user_name[0].nickName));
 
 
   return res.send(response(baseResponse.SUCCESS, result))
