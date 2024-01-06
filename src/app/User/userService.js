@@ -32,10 +32,10 @@ exports.createUsers = async function (email, password, userName, birth, phoneNum
         // if (nickNameRows.length > 0)
         //     return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
 
-        const phoneNumRows = await userProvider.phoneNumCheck(phoneNum);
+        //const phoneNumRows = await userProvider.phoneNumCheck(phoneNum);
 
-        if (phoneNumRows.length > 0) {
-            return errResponse(baseResponse.SIGNUP_REDUNDANT_PHONENUMBER); }
+        //if (phoneNumRows.length > 0) {
+        //    return errResponse(baseResponse.SIGNUP_REDUNDANT_PHONENUMBER); }
 
 
 
