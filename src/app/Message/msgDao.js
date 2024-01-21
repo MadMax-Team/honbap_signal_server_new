@@ -97,7 +97,7 @@ async function deleteMsg(connection, roomId) {
 async function createPromise(connection,params) {
     const query = `
         UPDATE MessageRoom
-        SET new_where = ?, new_when =STR_TO_DATE( ?, '%Y-%m-%dT%H:%i:%s.%fZ'), menu  = ?
+        SET new_where = ?, new_when = ?, menu  = ?
         WHERE (userIdx = ? OR matchIdx = ?) AND roomId = ?;
     `;
     const [row] = await connection.query(query, params);
