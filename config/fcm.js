@@ -54,8 +54,8 @@ function buildIdxMessage(token, code, userIdx, nickName) {
         "message": {
             "token": token,
             "notification": {
-                "title": "FCM Test Title",
-                "body": "FCM Test Body"
+                "title": "혼밥시그널",
+                "body": "시그널 신청을 확인해주세요"
             },
             "data": {
                 "code": code,

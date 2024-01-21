@@ -15,11 +15,18 @@ exports.getSignalList = async function (userIdx)
       return signalOnUserList.find(obj => obj.userIdx === userIdx);
     }); // 중복 제거
     
-    const nearUsers = [];
+    let nearUsers = [];
+    nearUsers.length = 0;
 
-    signalOnUserList.forEach(signalOnUser => {
+    for(const signalOnUser of signalOnUserList) {
 
+      console.log(signalOnUser);
+    
+      if(signalOnUser.userIdx === userIdx) continue;
+  
       const distance = haversine(myLocation[0], {latitude: signalOnUser.latitude, longitude: signalOnUser.longitude}, { unit: 'km' });
+
+      console.log(distance);
       
       if (distance <= 10) {
         
@@ -27,11 +34,12 @@ exports.getSignalList = async function (userIdx)
           ...signalOnUser,
           distance: distance  // 거리 정보 추가
         };
+        
         nearUsers.push(userWithDistance);
-        logger.info(JSON.stringify(nearUsers));
       }
-    });
-
+    };
+    logger.info(JSON.stringify(nearUsers));
+    
     connection.release();
     
     return nearUsers;
