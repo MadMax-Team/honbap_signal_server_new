@@ -9,6 +9,8 @@ const signalService = require("../../app/Signal/signalService");
 const {sendFcmMessage, buildSignalMessage,buildAlarmMessage} = require("../../../config/fcm.js")
 const {buildIdxMessage} = require("../../../config/fcm.js");
 const { response, errResponse } = require("../../../config/response");
+const {fcm} = require("googleapis/build/src/apis/fcm");
+const {buildMessageAlarm} = require("../../../config/fcm");
 
 // 쪽지 방 생성
 exports.createMsgRoom = async function (req, res) {
@@ -55,8 +57,13 @@ exports.sendMsg = async function (req, res) {
   if(msg.length > 500) {
     return res.send(response(baseResponse.MSG_TEXT_OVER));
   }
-
-
+  var applyedIdx = 0;
+  const arr = roomId.split("_");
+  if(senderIdx == arr[0]) applyedIdx = arr[1];
+  else applyedIdx = arr[0];
+  const fcm_apply_user = await userProvider.getFCM(applyedIdx);
+  if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildMessageAlarm(fcm_apply_user[0].fcm,
+      "11000","새로운 쪽지 알림","상대방에게 온 새로운 쪽지를 확인해 보세요!"));
 
   const result = await msgService.sendMsg(roomId, senderIdx, msg);
   return res.send(baseResponse.SUCCESS);

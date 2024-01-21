@@ -79,6 +79,22 @@ function buildAlarmMessage(token,code){
     };
 }
 
+//11000
+function buildMessageAlarm(token,code,title,body){
+    return {
+        "message": {
+            "token": token,
+            "notification":{
+                "title": title,
+                "body": body
+            },
+            "data": {
+                "code": code,
+            }
+        }
+    };
+}
+
 
 function sendFcmMessage(token, FCMMessage){
 
@@ -113,4 +129,4 @@ function sendFcmMessage(token, FCMMessage){
     });
 }
 
-module.exports = { sendFcmMessage, buildSignalMessage, buildIdxMessage, buildAlarmMessage };
+module.exports = { sendFcmMessage, buildSignalMessage, buildIdxMessage, buildAlarmMessage , buildMessageAlarm };
