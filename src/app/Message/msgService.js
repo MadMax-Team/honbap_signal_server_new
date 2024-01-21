@@ -19,9 +19,9 @@ exports.createMsgRoom = async function (userIdx, matchIdx, roomId , roomId2) {
 
         const connection = await pool.getConnection(async (conn) => conn);
         if(exitroom.length > 0 || exitroom2.length > 0){
-            if(exitroom2.length > 0) params = [matchIdx,userIdx,roomId];
-            console.log(exitroom2.length);
-            console.log(params);
+            if(exitroom2.length > 0) params = [matchIdx,userIdx,roomId2];
+            //console.log(exitroom2.length);
+            //console.log(params);
             const updateRoomResult = await msgDao.updateExitUserIdx(connection,params);
             return response(baseResponse.SUCCESS);
         }
