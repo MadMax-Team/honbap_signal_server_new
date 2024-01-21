@@ -61,6 +61,14 @@ exports.sendMsg = async function (req, res) {
   const arr = roomId.split("_");
   if(senderIdx == arr[0]) applyedIdx = arr[1];
   else applyedIdx = arr[0];
+
+  //
+  const getRoomIdxResult = await msgProvider.getRoomIdx(roomId);
+  const applyedIdx = getRoomIdxResult[0].matchIdx;
+  if (applyedIdx == 7)
+    return res.send(baseResponse.SUCCESS);
+  //
+  
   const fcm_apply_user = await userProvider.getFCM(applyedIdx);
   if(fcm_apply_user) sendFcmMessage(fcm_apply_user[0].fcm,buildMessageAlarm(fcm_apply_user[0].fcm,
       "11000","새로운 쪽지 알림","상대방에게 온 새로운 쪽지를 확인해 보세요!"));
