@@ -28,8 +28,11 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
     const connection = await pool.getConnection(async (conn) => conn);
 
     try {
+        console.log(sigPromiseTime);
         if(sigPromiseTime!=null) sigPromiseTime = Date.parse(sigPromiseTime);
-         await connection.beginTransaction();
+        console.log(sigPromiseTime);
+
+        await connection.beginTransaction();
 
         //이미 시그널 값이 존재하면 time, area, menu update만 해줌
         const findMySignalResult = await signalDao.findMySignal(connection, userIdx);
