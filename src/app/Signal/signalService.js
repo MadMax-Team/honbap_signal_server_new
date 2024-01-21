@@ -29,8 +29,8 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
 
     try {
         console.log(sigPromiseTime);
-        if(sigPromiseTime!=null) sigPromiseTime = Date.parse(sigPromiseTime);
-        console.log(sigPromiseTime);
+        // if(sigPromiseTime!=null) sigPromiseTime = Date.parse(sigPromiseTime);
+        // console.log(sigPromiseTime);
 
         await connection.beginTransaction();
 
