@@ -14,11 +14,12 @@ exports.createMsgRoom = async function (userIdx, matchIdx, roomId , roomId2) {
 
         const exitroom = await msgProvider.getRoomIdx(roomId);
         const exitroom2 = await  msgProvider.getRoomIdx(roomId2);
-        const params = [userIdx, matchIdx, roomId];
+        var params = [userIdx, matchIdx, roomId];
 
 
         const connection = await pool.getConnection(async (conn) => conn);
         if(exitroom.length > 0 || exitroom2.length > 0){
+            if(exitroom2.length>0) params = [matchIdx,userIdx,roomId];
             const updateRoomResult = await msgDao.updateExitUserIdx(connection,params);
             return response(baseResponse.SUCCESS);
         }
