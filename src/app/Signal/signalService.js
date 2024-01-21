@@ -28,6 +28,7 @@ exports.createSignal = async function (sigPromiseTime, sigPromiseArea, sigPromis
     const connection = await pool.getConnection(async (conn) => conn);
 
     try {
+        if(sigPromiseTime!=null) sigPromiseTime = Date.parse(sigPromiseTime);
          await connection.beginTransaction();
 
         //이미 시그널 값이 존재하면 time, area, menu update만 해줌
