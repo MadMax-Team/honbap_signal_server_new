@@ -102,7 +102,7 @@ async function getMatchInfo(connection, params) {
 async function updateSignal(connection, params, params2) {
   const query = `
                   UPDATE Signaling
-                  SET sigPromiseTime = STR_TO_DATE(?, '%Y-%m-%dT%H:%i:%s.%fZ'), sigPromiseArea = ?, sigPromiseMenu = ?, updateAt = DEFAULT
+                  SET sigPromiseTime = STR_TO_DATE(?, '%Y-%m-%dT%H:%i:%s.%fZ'), sigPromiseArea = ?, sigPromiseMenu = ?, updateAt = DEFAULT, checkSigWrite = 1
                   WHERE (userIdx = ? OR applyedIdx = ?) AND ((sigStatus = 1 AND sigMatchStatus = 0) OR sigStatus = 0);
                   `;
   const [row] = await connection.query(query, params);
